@@ -1,15 +1,11 @@
 <template>
-  <li v-if="subitems.length">
+  <li v-if="subitems.length" class="submenu">
     <div v-bind:class="{isActive:setActive}">
       <img v-bind:src="icon" />
       <a v-on:click="click">{{name}}</a>
     </div>
-    <ul v-if="isCollapsed" class="submenu">
-      <menu-item
-        v-for="subitem in this.subitems"
-        v-bind:key="subitem.id"
-        v-bind:item="subitem"
-      />
+    <ul v-if="isCollapsed">
+      <menu-item v-for="subitem in this.subitems" v-bind:key="subitem.id" v-bind:item="subitem" />
     </ul>
   </li>
   <li v-else v-bind:class="{isActive:setActive}" v-on:clickedMenuItemEvent="setActive">
@@ -35,7 +31,7 @@ export default {
   methods: {
     click() {
       this.isCollapsed = !this.isCollapsed;
-      this.$store.commit("setMenuItemActive", this.id)
+      this.$store.commit("setMenuItemActive", this.id);
     }
   },
   computed: {
@@ -43,16 +39,16 @@ export default {
       return this.activeMenuItem;
     },
     setActive() {
-      const id = this.$store.state.selectedMenuItem
+      const id = this.$store.state.selectedMenuItem;
       const isActive = id === this.id;
-      const isChildSelected = this.subitems.filter((item) => item.id === id)
-      if(isActive && this.subitems.length && !this.isCollapsed) {
-        return false
+      const isChildSelected = this.subitems.filter(item => item.id === id);
+      if (isActive && this.subitems.length && !this.isCollapsed) {
+        return false;
       }
-      if(isChildSelected.length){
-        return true
+      if (isChildSelected.length) {
+        return true;
       }
-      return isActive
+      return isActive;
     }
   }
 };
@@ -66,11 +62,31 @@ export default {
 li {
   text-align: left;
   list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   padding: 7px;
+  margin-left: 20px;
+}
+
+li li {
+  margin-right: 0px;
+  margin-top: 3px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .submenu {
-  margin-top: 10px;
+  display: block;
+}
+
+.submenu div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 img {

@@ -42,14 +42,6 @@ main nav ul {
   text-align: left;
 }
 
-main nav li {
-  list-style-type: none;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 5px;
-  text-align: left;
-}
-
 nav a:active {
   font-size: 0.95rem;
 }
