@@ -34,12 +34,12 @@ main nav {
   background: antiquewhite;
   text-decoration: none;
   height: 100vh;
+  resize: horizontal;
+  overflow: auto;
 }
 
-main nav ul {
+ul {
   padding: 0px;
-  margin: 0xp;
-  text-align: left;
 }
 
 nav a:active {

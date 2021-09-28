@@ -85,8 +85,7 @@ header h1 {
 }
 main {
   display: grid;
-  grid-template-columns: 30% 70%;
-  margin-top: 0px;
+  grid-template-columns: 20% 80%;
 }
 
 nav {

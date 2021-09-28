@@ -1,16 +1,18 @@
 <template>
   <li v-if="subitems.length" class="submenu">
-    <div v-bind:class="{isActive:setActive}">
+    <a v-bind:class="{isActive:setActive}" v-on:click="click" class="link">
       <img v-bind:src="icon" />
-      <a v-on:click="click">{{name}}</a>
-    </div>
-    <ul v-if="isCollapsed">
+      {{name}}
+    </a>
+    <ul v-if="isCollapsed" class="sublist">
       <menu-item v-for="subitem in this.subitems" v-bind:key="subitem.id" v-bind:item="subitem" />
     </ul>
   </li>
   <li v-else v-bind:class="{isActive:setActive}" v-on:clickedMenuItemEvent="setActive">
-    <img v-bind:src="icon" />
-    <router-link :to="href" v-on:click="click">{{name}}</router-link>
+    <router-link :to="href" v-on:click="click" class="link">
+      <img v-bind:src="icon" />
+      {{name}}
+    </router-link>
   </li>
 </template>
     
@@ -62,16 +64,14 @@ export default {
 li {
   text-align: left;
   list-style-type: none;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 7px;
-  margin-left: 20px;
+  margin-right: 5px;
 }
 
-li li {
+.link {
   margin-right: 0px;
-  margin-top: 3px;
+  margin-top: 5px;
+  margin-left: 10px;
+  padding: 3px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -81,17 +81,25 @@ li li {
   display: block;
 }
 
+.sublist {
+  margin-left: 15px;
+}
+
 .submenu div {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.submenu .link {
+  margin-top: 5px;
 }
 
 img {
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   margin-right: 10px;
 }
 
