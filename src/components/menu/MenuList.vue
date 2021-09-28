@@ -1,11 +1,8 @@
 <template>
   <nav>
+    <h2>Menu</h2>
     <ul>
-      <menu-item
-        v-for="item in items"
-        v-bind:key="item.id"
-        v-bind:item="item"
-      />
+      <menu-item v-for="item in items" v-bind:key="item.id" v-bind:item="item" />
     </ul>
   </nav>
 </template>
@@ -19,13 +16,10 @@ export default {
     MenuItem
   },
   data: () => {
-    return {
-    };
+    return {};
   },
-  methods: {
-  },
-  computed: {
-  }
+  methods: {},
+  computed: {}
 };
 </script>
 

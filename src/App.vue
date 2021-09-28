@@ -40,7 +40,35 @@ export default {
             {
               name: "Production planning",
               id: 12,
-              icon: "planning.svg",
+              icon: "machine.svg",
+              ref: "/element/22",
+              subitems: []
+            },
+            {
+              name: "Production view",
+              id: 11,
+              icon: "conveyor-belt.svg",
+              ref: "/element/21",
+              subitems: []
+            },
+            {
+              name: "Production planning",
+              id: 12,
+              icon: "machine.svg",
+              ref: "/element/22",
+              subitems: []
+            },
+            {
+              name: "Production view",
+              id: 11,
+              icon: "conveyor-belt.svg",
+              ref: "/element/21",
+              subitems: []
+            },
+            {
+              name: "Production planning",
+              id: 12,
+              icon: "order.svg",
               ref: "/element/22",
               subitems: []
             }
@@ -74,6 +102,7 @@ export default {
 </script>
 
 <style scoped>
+
 header {
   background: #2c3e50;
 }
