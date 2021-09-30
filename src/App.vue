@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <h1>Title bar bitch</h1>
+      <h1>MyProduction</h1>
     </header>
     <main>
       <MenuList v-bind:items="menu" class="menu" />
@@ -49,9 +49,7 @@ export default {
               id: 11,
               icon: "conveyor-belt.svg",
               ref: "/element/21",
-              subitems: []
-            },
-            {
+              subitems: [{
               name: "Production planning",
               id: 12,
               icon: "machine.svg",
@@ -71,6 +69,7 @@ export default {
               icon: "order.svg",
               ref: "/element/22",
               subitems: []
+            }]
             }
           ]
         },
@@ -111,10 +110,12 @@ header h1 {
   margin-top: 0px;
   margin-bottom: 0px;
   color: antiquewhite;
+  text-align: left;
+  margin-left: 10vh;
 }
 main {
   display: grid;
-  grid-template-columns: 20% 80%;
+  grid-template-columns: 15% 85%;
 }
 
 nav {
