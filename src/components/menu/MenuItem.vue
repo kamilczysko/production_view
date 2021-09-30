@@ -1,6 +1,6 @@
 <template>
   <li v-if="subitems.length" class="submenu">
-    <a v-bind:class="{isActive:setActive}" v-on:click="click" class="link">
+    <a v-bind:class="{isActive:isActive}" v-on:click="click" class="link">
       <img v-bind:src="icon" />
       {{name}}
     </a>
@@ -8,7 +8,7 @@
       <menu-item v-for="subitem in this.subitems" v-bind:key="subitem.id" v-bind:item="subitem" />
     </ul>
   </li>
-  <li v-else v-bind:class="{isActive:setActive}" v-on:clickedMenuItemEvent="setActive">
+  <li v-else v-bind:class="{isActive:isActive}" v-on:clickedMenuItemEvent="isActive">
     <router-link :to="href" v-on:click="click" class="link">
       <img v-bind:src="icon" />
       {{name}}
@@ -27,30 +27,36 @@ export default {
       href: this.item.ref,
       icon: require("@/assets/icons/menu/" + this.item.icon),
       subitems: this.item.subitems,
-      isCollapsed: false
+      isCollapsed: false,
+      isChildSelected: false,
     };
   },
   methods: {
     click() {
-      this.isCollapsed = !this.isCollapsed;
+      if(!this.hasChildrenSelected){
       this.$store.commit("setMenuItemActive", this.id);
+      }
+      this.isCollapsed = !this.isCollapsed;
     }
   },
   computed: {
     setActiveMenuItem() {
       return this.activeMenuItem;
     },
-    setActive() {
+    isActive() {
       const id = this.$store.state.selectedMenuItem;
       const isActive = id === this.id;
-      const isChildSelected = this.subitems.filter(item => item.id === id);
+      this.isChildSelected = this.subitems.filter(item => item.id === id);
       if (isActive && this.subitems.length && !this.isCollapsed) {
         return false;
       }
-      if (isChildSelected.length) {
+      if (this.isChildSelected.length) {
         return true;
       }
       return isActive;
+    },
+    hasChildrenSelected(){
+      return this.isChildSelected.length;
     }
   }
 };

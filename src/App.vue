@@ -7,7 +7,9 @@
       <MenuList v-bind:items="menu" class="menu" />
       <router-view></router-view>
     </main>
+    <footer>kw</footer>
   </div>
+  
 </template>
 
 <script>
@@ -43,33 +45,6 @@ export default {
               icon: "machine.svg",
               ref: "/element/22",
               subitems: []
-            },
-            {
-              name: "Production view",
-              id: 11,
-              icon: "conveyor-belt.svg",
-              ref: "/element/21",
-              subitems: [{
-              name: "Production planning",
-              id: 12,
-              icon: "machine.svg",
-              ref: "/element/22",
-              subitems: []
-            },
-            {
-              name: "Production view",
-              id: 11,
-              icon: "conveyor-belt.svg",
-              ref: "/element/21",
-              subitems: []
-            },
-            {
-              name: "Production planning",
-              id: 12,
-              icon: "order.svg",
-              ref: "/element/22",
-              subitems: []
-            }]
             }
           ]
         },
