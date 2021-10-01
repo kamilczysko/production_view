@@ -1,6 +1,6 @@
 const menuData =  [
     {
-      name: "Magazine",
+      name: "Storage",
       id: 0,
       icon: "warehouse.svg",
       ref: "/start",
@@ -16,7 +16,7 @@ const menuData =  [
           name: "Production view",
           id: 11,
           icon: "conveyor-belt.svg",
-          ref: "/element/21",
+          ref: "/operation-view",
           subitems: []
         },
         {
