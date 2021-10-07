@@ -1,5 +1,5 @@
 <template>
-  <div class="chart">
+  <div class="chart" v-on:scroll="scrollScale">
     <div class="scaleButtons">
       <button v-on:click="scaleDown">-</button>
       <button v-on:click="scaleUp">+</button>
@@ -257,7 +257,9 @@ export default {
         timeSings.push(timeSign);
       });
       const set = timeSings.reduce((acc, current) => {
-        const x = acc.find(item => item.timestamp === current.timestamp);
+        const x = acc.find(item => {
+          return Math.abs(item.timestamp - current.timestamp) <= 400 * 1000;
+        });
         if (!x) {
           return acc.concat([current]);
         } else {
@@ -278,10 +280,13 @@ export default {
       return new Date(timestamp);
     },
     scaleUp() {
-      this.scaleCoef += 0.1;
+      this.scaleCoef += 0.01;
     },
     scaleDown() {
-      this.scaleCoef -= 0.1;
+      this.scaleCoef -= 0.01;
+    },
+    scrollScale(event) {
+      
     }
   }
 };
@@ -312,6 +317,9 @@ export default {
 }
 .rowContainer {
   margin-top: 10vh;
+  display: inline-block;
+  white-space: nowrap;
+  width: calc(100% + 40px);
 }
 
 .scaleButtons {

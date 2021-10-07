@@ -1,8 +1,7 @@
 <template>
   <div>
-    
     <div class="bar">
-        <p class="label">{{barName}}</p>
+      <p class="label">{{barName}}</p>
       <div class="bar--container">
         <Bar
           v-for="operation in operations"
@@ -42,6 +41,9 @@ export default {
 .bar {
   display: flex;
   align-items: center;
+}
+.bar:hover {
+  background-color:antiquewhite;
 }
 .label {
   min-width: 10vh;
