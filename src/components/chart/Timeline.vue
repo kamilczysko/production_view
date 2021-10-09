@@ -3,10 +3,7 @@
     <td class="label"></td>
     <td>
       <div class="timeline--container">
-        <p
-          class="cursor"
-          v-bind:style="{'margin-left': `${timelineCursor}px`}"
-        >{{getTimeLineCursorValue(timelineCursor)}}</p>
+        <p class="cursor" v-bind:style="{'margin-left': `${timelineCursor}px`}">{{getTimeLineCursorValue(timelineCursor)}}</p>
         <p
           v-for="sign in getTimeSigns"
           v-bind:style="{'left': `${sign.signPosition*scaleCoef}px`}"

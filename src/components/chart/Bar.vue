@@ -6,11 +6,18 @@
             'min-width': `${op.duration*scaleCoef}px`,'max-width': `${op.duration*scaleCoef}px`}"
     style="height: 20px; border-radius:5px; background: red; border: 1px solid black; margin-top:0px"
     v-on:mousedown="onClick"
+    v-on:mouseover="mouseOver"
+    v-on:mouseleave="mouseLeave"
     draggable="true"
     v-on:drag="drag"
-    v-on:dragend="dragend">
-
-
+    v-on:dragend="dragend"
+  >
+    <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
+      <p>Operation: {{op.operationName}}</p>
+      <p>Station: {{op.stationName}}</p>
+      <p>Number of elements: {{op.numberOfElements}}</p>
+      <p>Duration: {{op.duration/60}} minutes</p>
+    </div>
   </div>
 </template>
 
@@ -21,9 +28,10 @@ export default {
   data() {
     return {
       startPosX: 0,
+      mouseIsOff: true,
       op: {
         id: this.operation.id,
-        name: this.operation.name,
+        operationName: this.operation.operationName,
         stationId: this.operation.stationId,
         stationName: this.operation.stationName,
         plannedStartTime: this.operation.plannedStartTime,
@@ -47,6 +55,12 @@ export default {
     },
     dragend(event) {
       this.op.plannedStartTime = event.pageX - this.startPosX;
+    },
+    mouseOver(event) {
+      this.mouseIsOff = false;
+    },
+    mouseLeave(event) {
+      this.mouseIsOff = true;
     }
   }
 };
@@ -55,5 +69,20 @@ export default {
 <style>
 .operationBar {
   position: absolute;
+  z-index: 900;
+}
+
+.invisible {
+    display: none;
+}
+
+.tooltip {
+    white-space: nowrap;
+    background: white;
+    border: .5px solid black;
+    width: fit-content;
+    margin-top: 20px;
+    padding: 5px;
+    z-index: 1100;
 }
 </style>

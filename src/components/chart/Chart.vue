@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="controlButtons">
       <div class="scaleButtons">
         <span>scale</span>
@@ -11,41 +12,42 @@
         <button>Save</button>
       </div>
     </div>
-  <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
-    <table>
-      <thead>
-        <tr class="tableHeader">
-          <th>
-            <select name="chartSelection" id="chartSelection" v-model="selected">
-              <option value="operationName">Operation</option>
-              <option value="stationName">Station</option>
-            </select>
-          </th>
-          <th style="width:100%; text-align:center">Timeline</th>
-        </tr>
+    <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
+      <table>
+        <thead>
+          <tr class="tableHeader">
+            <th class="selection">
+              <select name="chartSelection" id="chartSelection" v-model="selected">
+                <option value="operationName">Operation</option>
+                <option value="stationName">Station</option>
+              </select>
+            </th>
+            <th style="width:100%; text-align:center">Timeline</th>
+          </tr>
 
-        <Timeline
-          v-bind:operations="operations"
-          v-bind:startTimestamp="startTimestamp"
-          v-bind:endTimestamp="endTimestamp"
-          v-bind:scaleCoef="scaleCoef"
-          v-bind:timelineCursor="timeLineCursor"
-          v-bind:tableElement="$refs.container"
-        />
-      </thead>
-      <tbody>
-        <Row
-          v-for="(operations, index) in groupOperations"
-          v-bind:key="index"
-          v-bind:background="index"
-          v-bind:operations="operations"
-          v-bind:mainParamName="getSelected"
-          v-bind:startTimestamp="startTimestamp"
-          v-bind:endTimestamp="endTimestamp"
-          v-bind:scaleCoef="scaleCoef"
-        />
-      </tbody>
-    </table>
+          <Timeline
+            v-bind:operations="operations"
+            v-bind:startTimestamp="startTimestamp"
+            v-bind:endTimestamp="endTimestamp"
+            v-bind:scaleCoef="scaleCoef"
+            v-bind:timelineCursor="timeLineCursor"
+            v-bind:tableElement="$refs.container"
+          />
+        </thead>
+        <tbody>
+          <Row
+            v-for="(operations, index) in groupOperations"
+            v-bind:key="index"
+            v-bind:background="index"
+            v-bind:operations="operations"
+            v-bind:mainParamName="getSelected"
+            v-bind:startTimestamp="startTimestamp"
+            v-bind:endTimestamp="endTimestamp"
+            v-bind:scaleCoef="scaleCoef"
+          />
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -405,5 +407,10 @@ button:hover {
 button:active {
   color: blue;
   font-size: 1.1rem;
+}
+
+.selection {
+    position: sticky;
+    left: 0px;
 }
 </style>
