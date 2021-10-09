@@ -34,31 +34,37 @@ export default {
       return this.operations[0][this.mainParamName];
     },
     isOddKey() {
-        console.log(this.background)
-        return this.background%2==1
+      console.log(this.background);
+      return this.background % 2 == 1;
     }
   }
 };
 </script>
 <style>
-td{
-    height: 40px;
+td {
+  height: 40px;
 }
 tr {
-    border-top: .5px solid black;
-    width: 100vw;
+  border-top: 0.5px solid black;
+  width: 100vw;
+}
+tr .label {
 }
 .label {
   min-width: 10vw;
   max-width: 10vw;
+  position: sticky;
+  left: 0px;
+  background-color: cornsilk;
+  z-index: 1000;
 }
 .container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 90vw;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 90vw;
 }
-.background{
-    background: wheat;
+.background {
+  background: wheat;
 }
 </style>

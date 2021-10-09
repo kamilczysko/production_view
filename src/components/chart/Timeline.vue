@@ -119,7 +119,7 @@ tr {
 .cursor {
   border-left: 1px solid black;
   white-space: nowrap;
-  z-index: 1000;
+  z-index: 900;
   top: 7px;
 }
 </style>

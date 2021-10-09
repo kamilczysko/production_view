@@ -1,10 +1,17 @@
 <template>
-  <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
-    <div class="scaleButtons">
-      <button v-on:click="scaleDown">-</button>
-      <button v-on:click="scaleUp">+</button>
-      <p>{{scaleCoef}}</p>
+    <div class="controlButtons">
+      <div class="scaleButtons">
+        <span>scale</span>
+        <div>
+          <button v-on:click="scaleUp">+</button>
+          <button v-on:click="scaleDown">-</button>
+        </div>
+      </div>
+      <div class="saveButton">
+        <button>Save</button>
+      </div>
     </div>
+  <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
     <table>
       <thead>
         <tr class="tableHeader">
@@ -220,7 +227,8 @@ export default {
           orderNumber: 1234,
           numberOfElements: 23,
           dependentOn: []
-        },{
+        },
+        {
           id: 6,
           operationName: "test2",
           stationId: 12,
@@ -354,16 +362,48 @@ thead {
   white-space: nowrap;
   width: calc(100% + 40px);
 }
-
 .scaleButtons {
   display: flex;
-  align-content: center;
-  position: sticky;
+  width: 10vw;
+  text-align: center;
   align-items: center;
-  left: 50px;
+  flex-direction: column;
+  position: sticky;
+  left: 20px;
 }
+
 .tableHeader {
   width: 100vw;
   background-color: blanchedalmond;
+}
+.controlButtons {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.scaleButtons div {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+button {
+  border: none;
+  padding: 0.25em 0.8em;
+  background: none;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+button:hover {
+  color: red;
+}
+
+button:active {
+  color: blue;
+  font-size: 1.1rem;
 }
 </style>
