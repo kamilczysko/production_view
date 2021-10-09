@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <div class="bar">
-      <p class="label">{{barName}}</p>
-      <div class="bar--container">
-        <Bar
-          v-for="operation in operations"
-          v-bind:key="operation.id"
-          v-bind:operation="operation"
-          v-bind:startTimestamp="startTimestamp"
-          v-bind:endTimestamp="endTimestamp"
-          v-bind:scaleCoef="scaleCoef"
-        />
-      </div>
-    </div>
-  </div>
+  <tr v-bind:class="{background : isOddKey}">
+    <td class="label">{{barName}}</td>
+    <td class="container">
+      <Bar
+        v-for="operation in operations"
+        v-bind:key="operation.id"
+        v-bind:operation="operation"
+        v-bind:startTimestamp="startTimestamp"
+        v-bind:endTimestamp="endTimestamp"
+        v-bind:scaleCoef="scaleCoef"
+      />
+    </td>
+  </tr>
 </template>
 
 <script>
@@ -25,7 +23,8 @@ export default {
     "mainParamName",
     "startTimestamp",
     "endTimestamp",
-    "scaleCoef"
+    "scaleCoef",
+    "background"
   ],
   components: {
     Bar
@@ -33,27 +32,28 @@ export default {
   computed: {
     barName() {
       return this.operations[0][this.mainParamName];
+    },
+    isOddKey() {
+        console.log(this.background)
+        return this.background%2==1
     }
   }
 };
 </script>
 <style>
-.bar {
-  display: flex;
-  align-items: center;
-}
-.bar:hover {
-  background-color:antiquewhite;
+td{
+    height: 40px;
 }
 .label {
   min-width: 10vh;
   max-width: 10vh;
-  position: sticky;
-  left: 0px;
-  z-index: 1000;
 }
-.bar--container {
-  position: relative;
-  /* overflow: scroll; */
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.background{
+    background: wheat;
 }
 </style>

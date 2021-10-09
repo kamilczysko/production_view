@@ -1,50 +1,64 @@
 <template>
-  <div class="chart" v-on:scroll="scrollScale">
+  <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
     <div class="scaleButtons">
       <button v-on:click="scaleDown">-</button>
       <button v-on:click="scaleUp">+</button>
       <p>{{scaleCoef}}</p>
     </div>
-    <div class="timeline">
-      <div style="min-width: 10vh; max-width: 10vh;"></div>
-      <div class="timeline--container">
-        <p
-          v-for="sign in getTimeSigns"
-          v-bind:style="{'left': `${sign.signPosition*scaleCoef}px`}"
-          v-bind:key="sign.timestamp"
-          class="dateSign"
-        >{{sign.date}}</p>
-      </div>
-    </div>
-    <div class="rowContainer">
-      <Row
-        v-for="(operations, index) in groupOperations"
-        v-bind:key="index"
-        v-bind:operations="operations"
-        v-bind:mainParamName="mainParamName"
-        v-bind:startTimestamp="startTimestamp"
-        v-bind:endTimestamp="endTimestamp"
-        v-bind:scaleCoef="scaleCoef"
-        style="top: 30vh"
-      />
-    </div>
+    <table>
+      <thead>
+        <tr class="tableHeader">
+          <th>
+            <select name="chartSelection" id="chartSelection" v-model="selected">
+              <option value="operationName">Operation</option>
+              <option value="stationName">Station</option>
+            </select>
+          </th>
+          <th style="width:100%; text-align:center">Timeline</th>
+        </tr>
+
+        <Timeline
+          v-bind:operations="operations"
+          v-bind:startTimestamp="startTimestamp"
+          v-bind:endTimestamp="endTimestamp"
+          v-bind:scaleCoef="scaleCoef"
+          v-bind:timelineCursor="timeLineCursor"
+          v-bind:tableElement="$refs.container"
+        />
+      </thead>
+      <tbody>
+        <Row
+          v-for="(operations, index) in groupOperations"
+          v-bind:key="index"
+          v-bind:background="index"
+          v-bind:operations="operations"
+          v-bind:mainParamName="getSelected"
+          v-bind:startTimestamp="startTimestamp"
+          v-bind:endTimestamp="endTimestamp"
+          v-bind:scaleCoef="scaleCoef"
+        />
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
 import Row from "./Row.vue";
+import Timeline from "./Timeline.vue";
 
 export default {
   name: "chart",
   components: {
+    Timeline,
     Row
   },
   data: () => {
     return {
+      selected: "stationName",
       operations: [
         {
           id: 1,
-          name: "test1",
+          operationName: "test1",
           stationId: 12,
           stationName: "frezarka",
           plannedStartTime: 1633204221,
@@ -59,7 +73,7 @@ export default {
         },
         {
           id: 134,
-          name: "test1",
+          operationName: "test1",
           stationId: 12,
           stationName: "frezarka",
           plannedStartTime: 1633204221,
@@ -74,7 +88,7 @@ export default {
         },
         {
           id: 156,
-          name: "test1",
+          operationName: "test1",
           stationId: 12,
           stationName: "frezarka",
           plannedStartTime: 1633204222,
@@ -89,7 +103,7 @@ export default {
         },
         {
           id: 55,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "frezarka",
           plannedStartTime: 1633204351,
@@ -104,7 +118,7 @@ export default {
         },
         {
           id: 9,
-          name: "test1",
+          operationName: "test1",
           stationId: 12,
           stationName: "frezarka",
           plannedStartTime: 1633205221,
@@ -119,7 +133,7 @@ export default {
         },
         {
           id: 2,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "kosiarka",
           plannedStartTime: 1633201221,
@@ -134,7 +148,7 @@ export default {
         },
         {
           id: 3442,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "kosiarka",
           plannedStartTime: 1633201621,
@@ -149,7 +163,7 @@ export default {
         },
         {
           id: 3,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "kosiarka",
           plannedStartTime: 1633204221,
@@ -164,7 +178,7 @@ export default {
         },
         {
           id: 5,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "kosiarka",
           plannedStartTime: 1633204221,
@@ -179,7 +193,7 @@ export default {
         },
         {
           id: 6,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "kosiarka",
           plannedStartTime: 1633204221,
@@ -194,7 +208,7 @@ export default {
         },
         {
           id: 6,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "pralka",
           plannedStartTime: 1633204721,
@@ -209,7 +223,7 @@ export default {
         },
         {
           id: 6,
-          name: "test2",
+          operationName: "test2",
           stationId: 12,
           stationName: "pralka",
           plannedStartTime: 1633205721,
@@ -225,7 +239,8 @@ export default {
       ],
       mainParam: "stationName",
       mainParamName: "stationName",
-      scaleCoef: 0.3
+      scaleCoef: 0.3,
+      timeLineCursor: 0
     };
   },
   computed: {
@@ -246,27 +261,10 @@ export default {
       const lastElement = list[list.length - 1];
       return lastElement.plannedStartTime + lastElement.duration;
     },
-    getTimeSigns() {
-      let timeSings = [];
-      this.operations.forEach(element => {
-        const timeSign = {
-          signPosition: element.plannedStartTime - this.startTimestamp,
-          timestamp: element.plannedStartTime * 1000,
-          date: new Date(element.plannedStartTime * 1000)
-        };
-        timeSings.push(timeSign);
-      });
-      const set = timeSings.reduce((acc, current) => {
-        const x = acc.find(item => {
-          return Math.abs(item.timestamp - current.timestamp) <= 400 * 1000;
-        });
-        if (!x) {
-          return acc.concat([current]);
-        } else {
-          return acc;
-        }
-      }, []);
-      return set;
+    getSelected() {
+      this.mainParam = this.selected;
+      this.mainParamName = this.selected;
+      return this.selected;
     }
   },
   methods: {
@@ -285,35 +283,38 @@ export default {
     scaleDown() {
       this.scaleCoef -= 0.01;
     },
-    scrollScale(event) {
-      
+    mousemoveEvent(event) {
+      const tab = this.$refs.container;
+      this.timeLineCursor =
+        event.pageX +
+        tab.scrollLeft -
+        tab.getBoundingClientRect().x -
+        Math.round((10 * window.innerWidth) / 100);
     }
   }
 };
 </script>
 
 <style>
-.chart {
-  overflow-x: auto;
+table {
+  border-collapse: collapse;
 }
-.timeline {
-  display: flex;
-  align-items: center;
+button {
+  height: 25px;
 }
-
-.dateSign {
-  border-left: 3px solid red;
-  height: 100px;
-  position: relative;
-  width: 200px;
+th {
+  text-align: center;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
-
-.timeline--container {
-  position: relative;
+.table-container {
+  overflow-x: scroll;
 }
-
-.timeline--container p {
-  position: absolute;
+thead, tbody {
+     display: block;
+}
+thead {
+    width: 100vw;
 }
 .rowContainer {
   margin-top: 10vh;
@@ -326,6 +327,10 @@ export default {
   display: flex;
   align-content: center;
   position: sticky;
-  left: 0px;
+  align-items: center;
+  left: 50px;
+}
+.tableHeader {
+  width: 100vh;
 }
 </style>

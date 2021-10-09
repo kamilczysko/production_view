@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <div
-      class="operationBar"
-      v-bind:style="{
+  <div
+    class="operationBar"
+    v-bind:style="{
             'left': `${(op.plannedStartTime-this.startTimestamp)*scaleCoef}px`,
             'min-width': `${op.duration*scaleCoef}px`,'max-width': `${op.duration*scaleCoef}px`}"
-      style="height: 20px; border-radius:5px; background: red; border: 1px solid black; margin-top:0px"
-      v-on:mousedown="onClick"
-      draggable="true"
-      v-on:drag="drag"
-      v-on:dragend="dragend"
-    ></div>
+    style="height: 20px; border-radius:5px; background: red; border: 1px solid black; margin-top:0px"
+    v-on:mousedown="onClick"
+    draggable="true"
+    v-on:drag="drag"
+    v-on:dragend="dragend">
+
+    
   </div>
 </template>
 
@@ -55,6 +55,6 @@ export default {
 
 <style>
 .operationBar {
-    position: absolute;
+  position: absolute;
 }
 </style>
