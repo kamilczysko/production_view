@@ -220,6 +220,35 @@ export default {
           orderNumber: 1234,
           numberOfElements: 23,
           dependentOn: []
+        },{
+          id: 6,
+          operationName: "test2",
+          stationId: 12,
+          stationName: "dupsko",
+          plannedStartTime: 1633204221,
+          realStartTime: null,
+          duration: 345,
+          realDuration: null,
+          prepareTime: 344,
+          endingTime: 2345,
+          orderNumber: 1234,
+          numberOfElements: 23,
+          dependentOn: []
+        },
+        {
+          id: 6,
+          operationName: "test2",
+          stationId: 12,
+          stationName: "sracz",
+          plannedStartTime: 1633204721,
+          realStartTime: null,
+          duration: 345,
+          realDuration: null,
+          prepareTime: 344,
+          endingTime: 2345,
+          orderNumber: 1234,
+          numberOfElements: 23,
+          dependentOn: []
         },
         {
           id: 6,
@@ -304,17 +333,20 @@ button {
 }
 th {
   text-align: center;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
 }
 .table-container {
   overflow-x: scroll;
 }
-thead, tbody {
-     display: block;
+thead,
+tbody {
+  display: block;
 }
 thead {
-    width: 100vw;
+  width: 100vw;
+  position: sticky;
+  top: 0px;
+  background: white;
+  z-index: 1000;
 }
 .rowContainer {
   margin-top: 10vh;
@@ -331,6 +363,7 @@ thead {
   left: 50px;
 }
 .tableHeader {
-  width: 100vh;
+  width: 100vw;
+  background-color: blanchedalmond;
 }
 </style>

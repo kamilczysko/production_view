@@ -44,14 +44,19 @@ export default {
 td{
     height: 40px;
 }
+tr {
+    border-top: .5px solid black;
+    width: 100vw;
+}
 .label {
-  min-width: 10vh;
-  max-width: 10vh;
+  min-width: 10vw;
+  max-width: 10vw;
 }
 .container {
     position: relative;
     display: flex;
     align-items: center;
+    width: 90vw;
 }
 .background{
     background: wheat;

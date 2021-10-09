@@ -88,11 +88,12 @@ export default {
 <style scoped>
 tr {
     width: 150vw;
-    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    background-color: beige;
 }
 .label {
-  min-width: 10vh;
-  max-width: 10vh;
+  min-width: 10vw;
+  max-width: 10vw;
 }
 
 .timeline {
@@ -118,7 +119,6 @@ tr {
 .cursor {
   border-left: 1px solid black;
   white-space: nowrap;
-  height: 100vh;
   z-index: 1000;
   top: 7px;
 }

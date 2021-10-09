@@ -10,7 +10,7 @@
     v-on:drag="drag"
     v-on:dragend="dragend">
 
-    
+
   </div>
 </template>
 
@@ -41,7 +41,6 @@ export default {
   methods: {
     onClick(event) {
       this.startPosX = event.pageX;
-      console.log("start: " + this.startPosX);
     },
     drag(event) {
       this.op.plannedStartTime = event.pageX - this.startPosX;
