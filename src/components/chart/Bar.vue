@@ -11,11 +11,14 @@
     draggable="true"
     v-on:drag="drag"
     v-on:dragend="dragend"
+    ref="container"
   >
     <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
       <p>Operation: {{op.operationName}}</p>
       <p>Station: {{op.stationName}}</p>
       <p>Number of elements: {{op.numberOfElements}}</p>
+      <p>Start at: {{getTime((op.plannedStartTime*1000))}}</p>
+      <p>Ends at: {{getTime((op.plannedStartTime+op.duration)*1000)}}</p>
       <p>Duration: {{op.duration/60}} minutes</p>
     </div>
   </div>
@@ -51,16 +54,20 @@ export default {
       this.startPosX = event.pageX;
     },
     drag(event) {
-      this.op.plannedStartTime = event.pageX - this.startPosX;
+      
     },
     dragend(event) {
-      this.op.plannedStartTime = event.pageX - this.startPosX;
+      this.op.plannedStartTime = this.op.plannedStartTime + (event.pageX - this.startPosX)/this.scaleCoef
     },
     mouseOver(event) {
       this.mouseIsOff = false;
     },
     mouseLeave(event) {
       this.mouseIsOff = true;
+    },
+    getTime(actualTime){
+      const time = new Date(actualTime)
+       return time.getUTCDate() + " / "+ (time.getUTCMonth() + 1 )+ "-" + time.getHours() + ":" + time.getMinutes()
     }
   }
 };
@@ -83,6 +90,6 @@ export default {
     width: fit-content;
     margin-top: 20px;
     padding: 5px;
-    z-index: 1100;
+    z-index: 11000;
 }
 </style>

@@ -8,6 +8,10 @@
           <button v-on:click="scaleDown">-</button>
         </div>
       </div>
+      <div class="refreshButton">
+        <button><img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png"/></button>
+      </div>
+
       <div class="saveButton">
         <button>Save</button>
       </div>

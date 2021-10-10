@@ -55,14 +55,7 @@ export default {
           signPosition: element.plannedStartTime - this.startTimestamp,
           timestamp: element.plannedStartTime * 1000,
           date:
-            actualTime.getUTCMonth() +
-            1 +
-            "/" +
-            actualTime.getUTCDate() +
-            "-" +
-            actualTime.getHours() +
-            ":" +
-            actualTime.getMinutes()
+          actualTime.getUTCDate() + " / "+ (actualTime.getUTCMonth() + 1 )+ "-" + actualTime.getHours() + ":" + actualTime.getMinutes()
         };
         timeSings.push(timeSign);
       });
