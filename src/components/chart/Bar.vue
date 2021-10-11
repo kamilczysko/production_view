@@ -1,5 +1,5 @@
 <template>
-  <div
+  <!-- <div
     class="operationBar"
     v-bind:style="{
             'left': `${(op.plannedStartTime-this.startTimestamp)*scaleCoef}px`,
@@ -21,15 +21,40 @@
       <p>Ends at: {{getTime((op.plannedStartTime+op.duration)*1000)}}</p>
       <p>Duration: {{op.duration/60}} minutes</p>
     </div>
-  </div>
+  </div> -->
+  
+    <Vue3DraggableResizable
+    class="bar"
+      :initW="op.duration*scaleCoef"
+      :initH="20"
+      v-model:x="getPosition"
+      v-model:y="y"
+      v-model:w="w"
+      v-model:h="h"
+      v-model:active="active"
+      :draggable="true"
+      :resizable="true"
+      :disabledY="true"
+      :disabledH="true" ></Vue3DraggableResizable>
+  
 </template>
 
 <script>
+import Vue3DraggableResizable from 'vue3-draggable-resizable'
+
 export default {
   name: "bar",
+  components: {
+    Vue3DraggableResizable
+  },
   props: ["operation", "startTimestamp", "endTimestamp", "scaleCoef"],
   data() {
     return {
+      x: 100,
+      y: 0,
+      h: 100,
+      w: 100,
+      active: false,
       startPosX: 0,
       mouseIsOff: true,
       op: {
@@ -69,11 +94,21 @@ export default {
       const time = new Date(actualTime)
        return time.getUTCDate() + " / "+ (time.getUTCMonth() + 1 )+ "-" + time.getHours() + ":" + time.getMinutes()
     }
+  },
+  computed: {
+    getPosition() {
+      return (this.op.plannedStartTime-this.startTimestamp)*this.scaleCoef
+    }
   }
 };
 </script>
 
 <style>
+.bar {
+  z-index: 500000;
+  background: red;
+  border-radius: 5px;
+}
 .operationBar {
   position: absolute;
   z-index: 900;
@@ -91,5 +126,14 @@ export default {
     margin-top: 20px;
     padding: 5px;
     z-index: 11000;
+}
+.parent {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  border: 1px solid #000;
+  user-select: none;
 }
 </style>
