@@ -38,7 +38,8 @@ const router = createRouter({
 const store = createStore({
     state() {
         return {
-            selectedMenuItem: null
+            selectedMenuItem: null,
+            
         }
     },
     mutations: {

@@ -48,8 +48,6 @@ tr {
   border-top: 0.5px solid black;
   width: 100vw;
 }
-tr .label {
-}
 .label {
   min-width: 10vw;
   max-width: 10vw;

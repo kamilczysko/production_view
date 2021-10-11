@@ -4,16 +4,20 @@
       <div class="scaleButtons">
         <span>scale</span>
         <div>
-          <button v-on:click="scaleUp">+</button>
-          <button v-on:click="scaleDown">-</button>
+          <button v-on:click="scaleUp"><img src="https://img.icons8.com/plumpy/24/000000/add.png"/></button>
+          <button v-on:click="scaleDown"><img src="https://img.icons8.com/plumpy/24/000000/minus--v2.png"/></button>
         </div>
       </div>
       <div class="refreshButton">
         <button><img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png"/></button>
       </div>
 
+      <div class="addButton">
+        <button><img src="https://img.icons8.com/ios-glyphs/30/000000/add--v1.png"/></button>
+      </div>
+
       <div class="saveButton">
-        <button>Save</button>
+        <button><img src="https://img.icons8.com/material-outlined/24/000000/save.png"/></button>
       </div>
     </div>
     <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
