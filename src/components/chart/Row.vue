@@ -1,5 +1,5 @@
 <template>
-  <tr v-bind:class="{background : isOddKey}">
+  <tr v-on:contextmenu="onClick">
     <td class="label">{{barName}}</td>
     <td class="container">
       <Bar
@@ -22,6 +22,7 @@ export default {
     "operations",
     "mainParamName",
     "startTimestamp",
+    "mainParamId",
     "endTimestamp",
     "scaleCoef",
     "background"
@@ -32,10 +33,13 @@ export default {
   computed: {
     barName() {
       return this.operations[0][this.mainParamName];
-    },
-    isOddKey() {
-      console.log(this.background);
-      return this.background % 2 == 1;
+    }
+  },
+  methods: {
+    onClick(event) {
+      event.preventDefault()
+      const op = this.$store.state.selectedOperation
+      this.$emit("moveOperationEvent", {destinationId: this.operations[0][this.mainParamId], operationToChange: op})
     }
   }
 };
@@ -48,8 +52,7 @@ tr {
   border-top: 0.5px solid black;
   width: 100vw;
 }
-tr .label {
-}
+
 .label {
   min-width: 10vw;
   max-width: 10vw;

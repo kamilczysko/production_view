@@ -30,7 +30,7 @@
           </tr>
 
           <Timeline
-            v-bind:operations="operations"
+            v-bind:operations="getOperations"
             v-bind:startTimestamp="startTimestamp"
             v-bind:endTimestamp="endTimestamp"
             v-bind:scaleCoef="scaleCoef"
@@ -44,10 +44,12 @@
             v-bind:key="index"
             v-bind:background="index"
             v-bind:operations="operations"
-            v-bind:mainParamName="getSelected"
+            v-bind:mainParamName="getSelectedParamName"
+            v-bind:mainParamId="getSelectedParamId"
             v-bind:startTimestamp="startTimestamp"
             v-bind:endTimestamp="endTimestamp"
             v-bind:scaleCoef="scaleCoef"
+            v-on:moveOperationEvent="onMoveOperationEvent"
           />
         </tbody>
       </table>
@@ -72,71 +74,11 @@ export default {
         {
           id: 1,
           operationName: "test1",
-          stationId: 12,
+          stationId: 3,
           stationName: "frezarka",
           plannedStartTime: 1633204221,
           realStartTime: null,
           duration: 100,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 134,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 100,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 156,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204222,
-          realStartTime: null,
-          duration: 25,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 55,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204351,
-          realStartTime: null,
-          duration: 50,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 9,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633205221,
-          realStartTime: null,
-          duration: 650,
           realDuration: null,
           prepareTime: 344,
           endingTime: 2345,
@@ -147,7 +89,7 @@ export default {
         {
           id: 2,
           operationName: "test2",
-          stationId: 12,
+          stationId: 2,
           stationName: "kosiarka",
           plannedStartTime: 1633201221,
           realStartTime: null,
@@ -158,137 +100,18 @@ export default {
           orderNumber: 1234,
           numberOfElements: 23,
           dependentOn: [1]
-        },
-        {
-          id: 3442,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633201621,
-          realStartTime: null,
-          duration: 150,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [1]
-        },
-        {
-          id: 3,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 45,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [2]
-        },
-        {
-          id: 5,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 66,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "pralka",
-          plannedStartTime: 1633204721,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "dupsko",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "sracz",
-          plannedStartTime: 1633204721,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "pralka",
-          plannedStartTime: 1633205721,
-          realStartTime: null,
-          duration: 150,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
         }
       ],
       mainParam: "stationName",
       mainParamName: "stationName",
+      mainParamId: "stationId",
       scaleCoef: 0.3,
       timeLineCursor: 0
     };
   },
   computed: {
     groupOperations() {
-      return this.group(this.operations, this.mainParam);
+      return this.group(this.getOperations, this.mainParam);
     },
     startTimestamp() {
       return this.operations.sort((a, b) => {
@@ -304,13 +127,33 @@ export default {
       const lastElement = list[list.length - 1];
       return lastElement.plannedStartTime + lastElement.duration;
     },
-    getSelected() {
+    getSelectedParamName() {
       this.mainParam = this.selected;
       this.mainParamName = this.selected;
       return this.selected;
+    },
+    getSelectedParamId(){
+      return "stationName"
+    },
+    getOperations(){
+      return this.operations
     }
   },
   methods: {
+    onMoveOperationEvent(event){
+      let foundOperation = this.operations.filter(op => op.id === event.operationToChange.id)
+      if(foundOperation) {
+        console.log(event.destinationId+"--"+this.getSelectedParamId)
+        console.log("found opertaion: "+ JSON.stringify(this.groupOperations))
+        foundOperation[0][this.getSelectedParamId] = event.destinationId
+        foundOperation[0].plannedStartTime = event.operationToChange.startTime
+        foundOperation[0].duration = event.operationToChange.duration
+        console.log("found opertaion after: "+JSON.stringify(this.groupOperations))
+        
+        // this.$forceUpdate();
+      }
+      
+    },
     group(list, key) {
       return list.reduce((rv, x) => {
         (rv[x[key]] = rv[x[key]] || []).push(x);

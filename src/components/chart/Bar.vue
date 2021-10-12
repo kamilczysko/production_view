@@ -13,9 +13,8 @@
       :resizable="true"
       :disabledY="true"
       :disabledH="true"
-      v-on:mousedown="onClick"
-      v-on:mouseover="mouseOver"
-      v-on:mouseleave="mouseLeave"
+      @activated="onActive"
+      @deactivated="onDeactivate"
     >
       <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
         <p>Operation: {{op.operationName}}</p>
@@ -65,15 +64,10 @@ export default {
     };
   },
   mounted() {
-    this.x = this.getPosition
+    this.x = this.getPosition,
+    this.w = this.getWidth
   },
   methods: {
-    mouseOver(event) {
-      this.mouseIsOff = false;
-    },
-    mouseLeave(event) {
-      this.mouseIsOff = true;
-    },
     getTime(actualTime) {
       const time = new Date(actualTime);
       return (
@@ -85,8 +79,13 @@ export default {
         ":" +
         time.getMinutes()
       );
-    },onClick(){
-      console.log(this.x +" - "+this.w)
+    },onActive(){
+      console.log("activate")
+     this.$store.commit("selectOperationToMove", {id: this.operation.id, stationId: this.stationId, startTime: this.getStartTimeFromPosition, endTime:this.getEndTimeFromPosition, duration: this.getDuration});
+    },
+    onDeactivate(){
+      console.log("deactivate")
+      // this.$store.commit("selectOperationToMove", null);
     }
   },
   computed: {
@@ -98,6 +97,12 @@ export default {
     },
     getEndTimeFromPosition(){
       return ((this.x+this.w) / this.scaleCoef) + this.startTimestamp
+    },
+    getDuration() {
+      return this.w/this.scaleCoef
+    },
+    getWidth(){
+      return this.op.duration*this.scaleCoef
     }
   }
 };
