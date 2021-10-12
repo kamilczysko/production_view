@@ -1,46 +1,36 @@
 <template>
-  <!-- <div
-    class="operationBar"
-    v-bind:style="{
-            'left': `${(op.plannedStartTime-this.startTimestamp)*scaleCoef}px`,
-            'min-width': `${op.duration*scaleCoef}px`,'max-width': `${op.duration*scaleCoef}px`}"
-    style="height: 20px; border-radius:5px; background: red; border: 1px solid black; margin-top:0px"
-    v-on:mousedown="onClick"
-    v-on:mouseover="mouseOver"
-    v-on:mouseleave="mouseLeave"
-    draggable="true"
-    v-on:drag="drag"
-    v-on:dragend="dragend"
-    ref="container"
-  >
-    <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
-      <p>Operation: {{op.operationName}}</p>
-      <p>Station: {{op.stationName}}</p>
-      <p>Number of elements: {{op.numberOfElements}}</p>
-      <p>Start at: {{getTime((op.plannedStartTime*1000))}}</p>
-      <p>Ends at: {{getTime((op.plannedStartTime+op.duration)*1000)}}</p>
-      <p>Duration: {{op.duration/60}} minutes</p>
-    </div>
-  </div> -->
-  
+  <div>
     <Vue3DraggableResizable
-    class="bar"
+      class="bar"
       :initW="op.duration*scaleCoef"
       :initH="20"
-      v-model:x="getPosition"
-      v-model:y="y"
-      v-model:w="w"
-      v-model:h="h"
-      v-model:active="active"
+      :x="x"
+      :y="y"
+      :w="w"
+      :h="h"
+      :active="active"
       :draggable="true"
       :resizable="true"
       :disabledY="true"
-      :disabledH="true" ></Vue3DraggableResizable>
-  
+      :disabledH="true"
+      v-on:mousedown="onClick"
+      v-on:mouseover="mouseOver"
+      v-on:mouseleave="mouseLeave"
+    >
+      <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
+        <p>Operation: {{op.operationName}}</p>
+        <p>Station: {{op.stationName}}</p>
+        <p>Number of elements: {{op.numberOfElements}}</p>
+        <p>Start at: {{getTime((getStartTimeFromPosition*1000))}}</p>
+        <p>Ends at: {{getTime((getEndTimeFromPosition)*1000)}}</p>
+        <p>Duration: {{op.duration/60}} minutes</p>
+      </div>
+    </Vue3DraggableResizable>
+  </div>
 </template>
 
 <script>
-import Vue3DraggableResizable from 'vue3-draggable-resizable'
+import Vue3DraggableResizable from "vue3-draggable-resizable";
 
 export default {
   name: "bar",
@@ -50,10 +40,10 @@ export default {
   props: ["operation", "startTimestamp", "endTimestamp", "scaleCoef"],
   data() {
     return {
-      x: 100,
+      x: 0,
       y: 0,
-      h: 100,
-      w: 100,
+      h: 0,
+      w: 0,
       active: false,
       startPosX: 0,
       mouseIsOff: true,
@@ -74,30 +64,40 @@ export default {
       }
     };
   },
+  mounted() {
+    this.x = this.getPosition
+  },
   methods: {
-    onClick(event) {
-      this.startPosX = event.pageX;
-    },
-    drag(event) {
-      
-    },
-    dragend(event) {
-      this.op.plannedStartTime = this.op.plannedStartTime + (event.pageX - this.startPosX)/this.scaleCoef
-    },
     mouseOver(event) {
       this.mouseIsOff = false;
     },
     mouseLeave(event) {
       this.mouseIsOff = true;
     },
-    getTime(actualTime){
-      const time = new Date(actualTime)
-       return time.getUTCDate() + " / "+ (time.getUTCMonth() + 1 )+ "-" + time.getHours() + ":" + time.getMinutes()
+    getTime(actualTime) {
+      const time = new Date(actualTime);
+      return (
+        time.getUTCDate() +
+        " / " +
+        (time.getUTCMonth() + 1) +
+        "-" +
+        time.getHours() +
+        ":" +
+        time.getMinutes()
+      );
+    },onClick(){
+      console.log(this.x +" - "+this.w)
     }
   },
   computed: {
     getPosition() {
-      return (this.op.plannedStartTime-this.startTimestamp)*this.scaleCoef
+      return (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef
+    },
+    getStartTimeFromPosition(){
+      return (this.x / this.scaleCoef) + this.startTimestamp
+    },
+    getEndTimeFromPosition(){
+      return ((this.x+this.w) / this.scaleCoef) + this.startTimestamp
     }
   }
 };
@@ -105,7 +105,7 @@ export default {
 
 <style>
 .bar {
-  z-index: 500000;
+  z-index: 999;
   background: red;
   border-radius: 5px;
 }
@@ -115,17 +115,18 @@ export default {
 }
 
 .invisible {
-    display: none;
+  display: none;
 }
 
 .tooltip {
-    white-space: nowrap;
-    background: white;
-    border: .5px solid black;
-    width: fit-content;
-    margin-top: 20px;
-    padding: 5px;
-    z-index: 11000;
+  white-space: nowrap;
+  background: white;
+  border: 0.5px solid black;
+  width: fit-content;
+  margin-top: 20px;
+  padding: 5px;
+  z-index: 5000;
+  position:absolute;
 }
 .parent {
   width: 200px;
