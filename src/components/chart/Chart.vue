@@ -163,20 +163,6 @@ export default {
       
       return Object.fromEntries(stations);
     },
-    // startTimestamp() {
-    //   return this.operations.sort((a, b) => {
-    //     return a.plannedStartTime - b.plannedStartTime;
-    //   })[0].plannedStartTime;
-    // },
-    // endTimestamp() {
-    //   const list = this.operations.sort((a, b) => {
-    //     return (
-    //       a.plannedStartTime + a.duration - b.plannedStartTime + b.duration
-    //     );
-    //   });
-      // const lastElement = list[list.length - 1];
-      // return lastElement.plannedStartTime + lastElement.duration;
-    // },
     getSelectedParamName() {
       this.mainParam = this.selected;
       this.mainParamName = this.selected;
