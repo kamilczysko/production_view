@@ -9,7 +9,9 @@
         </div>
       </div>
       <div class="refreshButton">
-        <button><img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png"/></button>
+        <button>
+          <img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png" />
+        </button>
       </div>
 
       <div class="saveButton">
@@ -47,6 +49,7 @@
             v-bind:mainParamName="getSelectedParamName"
             v-bind:mainParamId="getSelectedParamId"
             v-bind:startTimestamp="startTimestamp"
+            v-bind:label="index"
             v-bind:endTimestamp="endTimestamp"
             v-bind:scaleCoef="scaleCoef"
             v-on:moveOperationEvent="onMoveOperationEvent"
@@ -100,7 +103,27 @@ export default {
           orderNumber: 1234,
           numberOfElements: 23,
           dependentOn: [1]
+        },
+        {
+          id: 3,
+          operationName: "test2hhh",
+          stationId: 3,
+          stationName: "kosiarka",
+          plannedStartTime: 1633201221,
+          realStartTime: null,
+          duration: 155,
+          realDuration: null,
+          prepareTime: 344,
+          endingTime: 2345,
+          orderNumber: 1234,
+          numberOfElements: 23,
+          dependentOn: [1]
         }
+      ],
+      stations: [
+        { name: "frezarka", id: 1 },
+        { name: "sracz", id: 2 },
+        { name: "kosiarka", id: 3 }
       ],
       mainParam: "stationName",
       mainParamName: "stationName",
@@ -111,7 +134,19 @@ export default {
   },
   computed: {
     groupOperations() {
-      return this.group(this.getOperations, this.mainParam);
+      let stations = new Map();
+      const groupedOperations = this.group(this.getOperations, this.mainParam);
+      this.stations.forEach(element => {
+      
+        let a = groupedOperations[element.name];
+        if (a) {
+          stations.set(element.name, a);
+        } else {
+          stations.set(element.name, []);
+        }
+      });
+      
+      return Object.fromEntries(stations);
     },
     startTimestamp() {
       return this.operations.sort((a, b) => {
@@ -132,27 +167,24 @@ export default {
       this.mainParamName = this.selected;
       return this.selected;
     },
-    getSelectedParamId(){
-      return "stationName"
+    getSelectedParamId() {
+      return "stationName";
     },
-    getOperations(){
-      return this.operations
+    getOperations() {
+      return this.operations;
     }
   },
   methods: {
-    onMoveOperationEvent(event){
-      let foundOperation = this.operations.filter(op => op.id === event.operationToChange.id)
-      if(foundOperation) {
-        console.log(event.destinationId+"--"+this.getSelectedParamId)
-        console.log("found opertaion: "+ JSON.stringify(this.groupOperations))
-        foundOperation[0][this.getSelectedParamId] = event.destinationId
-        foundOperation[0].plannedStartTime = event.operationToChange.startTime
-        foundOperation[0].duration = event.operationToChange.duration
-        console.log("found opertaion after: "+JSON.stringify(this.groupOperations))
-        
-        // this.$forceUpdate();
+    onMoveOperationEvent(event) {
+      let foundOperation = this.operations.filter(
+        op => op.id === event.operationToChange.id
+      );
+      if (foundOperation) {
+        foundOperation[0][this.getSelectedParamId] = event.destinationId;
+        foundOperation[0].plannedStartTime = event.operationToChange.startTime;
+        foundOperation[0].duration = event.operationToChange.duration;
+        console.log(JSON.stringify(foundOperation))
       }
-      
     },
     group(list, key) {
       return list.reduce((rv, x) => {
@@ -257,7 +289,7 @@ button:active {
 }
 
 .selection {
-    position: sticky;
-    left: 0px;
+  position: sticky;
+  left: 0px;
 }
 </style>

@@ -4,17 +4,18 @@
       class="bar"
       :initW="op.duration*scaleCoef"
       :initH="20"
-      :x="x"
-      :y="y"
-      :w="w"
-      :h="h"
+      v-model:x="x"
+      v-model:y="y"
+      v-model:w="w"
+      v-model:h="h"
       :active="active"
       :draggable="true"
       :resizable="true"
       :disabledY="true"
       :disabledH="true"
+      @drag-end="onDragEnd"
       @activated="onActive"
-      @deactivated="onDeactivate"
+      @deactivated="onDeactive"
     >
       <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
         <p>Operation: {{op.operationName}}</p>
@@ -42,7 +43,7 @@ export default {
       x: 0,
       y: 0,
       h: 0,
-      w: 0,
+      w: this.getWidth,
       active: false,
       startPosX: 0,
       mouseIsOff: true,
@@ -64,10 +65,29 @@ export default {
     };
   },
   mounted() {
-    this.x = this.getPosition,
+    this.x = this.getPosition
     this.w = this.getWidth
   },
+  watch: {
+    scaleCoef: {
+      handler(newVal, oldVal) {
+        this.getPos();
+        this.getWidthAfterRezise();
+      },
+      deep: true,
+      immediate: true,
+    }},
   methods: {
+    onDragEnd(){
+        this.op.plannedStartTime = parseInt((this.x / this.scaleCoef) + this.startTimestamp)
+        this.duration = parseInt(this.op.duration*this.scaleCoef)
+    },
+    getPos(){
+      this.x = (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef
+    },
+    getWidthAfterRezise(){
+      this.w = this.op.duration*this.scaleCoef
+    },
     getTime(actualTime) {
       const time = new Date(actualTime);
       return (
@@ -79,13 +99,10 @@ export default {
         ":" +
         time.getMinutes()
       );
-    },onActive(){
-      console.log("activate")
+    },onDeactive(){
      this.$store.commit("selectOperationToMove", {id: this.operation.id, stationId: this.stationId, startTime: this.getStartTimeFromPosition, endTime:this.getEndTimeFromPosition, duration: this.getDuration});
     },
     onDeactivate(){
-      console.log("deactivate")
-      // this.$store.commit("selectOperationToMove", null);
     }
   },
   computed: {
@@ -93,7 +110,7 @@ export default {
       return (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef
     },
     getStartTimeFromPosition(){
-      return (this.x / this.scaleCoef) + this.startTimestamp
+      return parseInt((this.x / this.scaleCoef) + this.startTimestamp)
     },
     getEndTimeFromPosition(){
       return ((this.x+this.w) / this.scaleCoef) + this.startTimestamp
@@ -105,6 +122,7 @@ export default {
       return this.op.duration*this.scaleCoef
     }
   }
+  
 };
 </script>
 
@@ -131,7 +149,7 @@ export default {
   margin-top: 20px;
   padding: 5px;
   z-index: 5000;
-  position:absolute;
+  position: absolute;
 }
 .parent {
   width: 200px;
@@ -143,3 +161,4 @@ export default {
   user-select: none;
 }
 </style>
+

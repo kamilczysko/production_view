@@ -25,21 +25,24 @@ export default {
     "mainParamId",
     "endTimestamp",
     "scaleCoef",
-    "background"
+    "background",
+    "label"
   ],
   components: {
     Bar
   },
   computed: {
     barName() {
-      return this.operations[0][this.mainParamName];
+      return this.label
     }
   },
   methods: {
     onClick(event) {
+      
       event.preventDefault()
       const op = this.$store.state.selectedOperation
-      this.$emit("moveOperationEvent", {destinationId: this.operations[0][this.mainParamId], operationToChange: op})
+      console.log("aaaaa"+ JSON.stringify(op))
+      this.$emit("moveOperationEvent", {destinationId: this.label, operationToChange: op})
     }
   }
 };
