@@ -2,7 +2,7 @@
   <div>
     <div class="controlButtons">
       <div class="scaleButtons">
-        <span>scale</span>
+        <span>Scale</span>
         <div>
           <button v-on:click="scaleUp">+</button>
           <button v-on:click="scaleDown">-</button>
@@ -13,47 +13,38 @@
           <img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png" />
         </button>
       </div>
-
       <div class="saveButton">
         <button>Save</button>
       </div>
     </div>
-    <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
+    <div class="table-container" v-on:mousemove="onMouseMovement" ref="tableContainer">
       <table>
         <thead>
           <tr class="tableHeader">
-            <th class="selection">
-              <select name="chartSelection" id="chartSelection" v-model="selected">
-                <option value="operationName">Operation</option>
-                <option value="stationName">Station</option>
-              </select>
-            </th>
+            <th class="selection"></th>
             <th style="width:100%; text-align:center">Timeline</th>
           </tr>
-
           <Timeline
-            v-bind:operations="getOperations"
+            v-bind:timestamps="getTimestamps"
             v-bind:startTimestamp="startTimestamp"
             v-bind:endTimestamp="endTimestamp"
-            v-bind:scaleCoef="scaleCoef"
-            v-bind:timelineCursor="timeLineCursor"
-            v-bind:tableElement="$refs.container"
+            v-bind:scaleFactor="scaleFactor"
+            v-bind:timelineCursor="timelineCursor"
+            v-bind:tableElement="$refs.tableContainer"
           />
         </thead>
         <tbody>
-          <Row
-            v-for="(operations, index) in groupOperations"
-            v-bind:key="index"
-            v-bind:background="index"
-            v-bind:operations="operations"
-            v-bind:mainParamName="getSelectedParamName"
-            v-bind:mainParamId="getSelectedParamId"
+          <!-- <Row
+            v-for="(row, rowId) in getRows"
+            v-bind:key="rowId"
             v-bind:startTimestamp="startTimestamp"
-            v-bind:label="index"
             v-bind:endTimestamp="endTimestamp"
-            v-bind:scaleCoef="scaleCoef"
+            v-bind:operations="groupedOperations[rowId]"
+            v-bind:rowId="rowId"
+            v-bind:label="row.rowTitle"
+            v-bind:scaleFactor="scaleFactor"
             v-on:moveOperationEvent="onMoveOperationEvent"
-          />
+          /> -->
         </tbody>
       </table>
     </div>
@@ -72,146 +63,88 @@ export default {
   },
   data: () => {
     return {
-      selected: "stationName",
+      scaleFactor: 0.1,
       operations: [
         {
-          id: 1,
-          operationName: "test1",
-          stationId: 3,
-          stationName: "frezarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 100,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
+          operationId: 1,
+          startTimestamp: 1633204221,
+          duration: 200,
+          rowId: 1,
+          additionalInfo: [
+            { name: "Operation name", value: "Koszenie trawnika" }
+          ]
         },
         {
-          id: 2,
-          operationName: "test2",
-          stationId: 2,
-          stationName: "kosiarka",
-          plannedStartTime: 1633201221,
-          realStartTime: null,
-          duration: 155,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [1]
-        },
-        {
-          id: 3,
-          operationName: "test2hhh",
-          stationId: 3,
-          stationName: "kosiarka",
-          plannedStartTime: 1633201221,
-          realStartTime: null,
-          duration: 155,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [1]
+          operationId: 2,
+          startTimestamp: 1633205221,
+          duration: 200,
+          rowId: 1,
+          additionalInfo: []
         }
       ],
-      stations: [
-        { name: "frezarka", id: 1 },
-        { name: "sracz", id: 2 },
-        { name: "kosiarka", id: 3 }
+      rows: [
+        { rowId: 1, rowTitle: "kosiarka" },
+        { rowId: 2, rowTitle: "kibel" },
+        { rowId: 3, rowTitle: "pralka" },
+        { rowId: 4, rowTitle: "młotek" }
       ],
-      mainParam: "stationName",
-      mainParamName: "stationName",
-      mainParamId: "stationId",
-      scaleCoef: 0.3,
-      timeLineCursor: 0,
       startTimestamp: 0,
-      endTimestamp:0
+      endTimestamp: 0,
+      groupedOperations: [],
+      timelineCursor: 0
     };
   },
-  created(){
-    this.startTimestamp = this.operations.sort((a, b) => {
-        return a.plannedStartTime - b.plannedStartTime;
-      })[0].plannedStartTime;
-
-      const list = this.operations.sort((a, b) => {
-        return (
-          a.plannedStartTime + a.duration - b.plannedStartTime + b.duration
-        );
-      });
-      const lastElement = list[list.length - 1];
-      this.endTimestamp = lastElement.plannedStartTime + lastElement.duration;
+  created() {
+    this.startTimestamp = this.getStartTimestamp(this.operations);
+    this.endTimestamp = this.getEndTimestamp(this.operations);
+    this.groupedOperations = this.getGroupedOperationsByRowId;
   },
   computed: {
-    groupOperations() {
-      let stations = new Map();
-      const groupedOperations = this.group(this.getOperations, this.mainParam);
-      this.stations.forEach(element => {
-      
-        let a = groupedOperations[element.name];
-        if (a) {
-          stations.set(element.name, a);
-        } else {
-          stations.set(element.name, []);
-        }
-      });
-      
-      return Object.fromEntries(stations);
+    getRows() {
+      return this.getGrouped(this.rows, "rowId");
     },
-    getSelectedParamName() {
-      this.mainParam = this.selected;
-      this.mainParamName = this.selected;
-      return this.selected;
+    getGroupedOperationsByRowId() {
+      return this.getGrouped(this.operations, "rowId");
     },
-    getSelectedParamId() {
-      return "stationName";
-    },
-    getOperations() {
-      return this.operations;
+    getTimestamps() {
+      return this.operations.map(op => op.startTimestamp);
     }
   },
   methods: {
-    refresh(){
-      this.$router.go(0);
+    scaleUp() {
+      this.scaleFactor += 0.05;
     },
-    onMoveOperationEvent(event) {
-      let foundOperation = this.operations.filter(
-        op => op.id === event.operationToChange.id
-      );
-      if (foundOperation) {
-        foundOperation[0][this.getSelectedParamId] = event.destinationId;
-        foundOperation[0].plannedStartTime = event.operationToChange.startTime;
-        foundOperation[0].duration = event.operationToChange.duration;
-      }
+    scaleDown() {
+      this.scaleFactor += 0.05;
     },
-    group(list, key) {
+    getStartTimestamp(operations) {
+      return operations.sort((a, b) => {
+        return a.startTimestamp - b.startTimestamp;
+      })[0].startTimestamp;
+    },
+    getEndTimestamp(operations) {
+      const result = operations.sort((a, b) => {
+        return (
+          b.plannedStartTime + b.duration - (a.plannedStartTime + a.duration)
+        );
+      })[0];
+      return result.startTimestamp + result.duration;
+    },
+    getGrouped(list, key) {
       return list.reduce((rv, x) => {
         (rv[x[key]] = rv[x[key]] || []).push(x);
         return rv;
       }, {});
     },
-    getDateTime(timestamp) {
-      return new Date(timestamp);
-    },
-    scaleUp() {
-      this.scaleCoef += 0.01;
-    },
-    scaleDown() {
-      this.scaleCoef -= 0.01;
-    },
-    mousemoveEvent(event) {
-      const tab = this.$refs.container;
-      this.timeLineCursor =
+    onMouseMovement(event) {
+      const ROW_TITLE_WIDTH = 10;
+      const tab = this.$refs.tableContainer;
+      this.timelineCursor =
         event.pageX +
         tab.scrollLeft -
         tab.getBoundingClientRect().x -
-        Math.round((10 * window.innerWidth) / 100);
-    }
+        Math.round((ROW_TITLE_WIDTH * window.innerWidth) / 100);
+    },
   }
 };
 </script>
