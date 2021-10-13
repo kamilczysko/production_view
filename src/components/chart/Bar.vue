@@ -65,8 +65,8 @@ export default {
     };
   },
   mounted() {
-    this.x = this.getPosition
-    this.w = this.getWidth
+    this.x = this.getPosition;
+    this.w = this.getWidth;
   },
   watch: {
     scaleCoef: {
@@ -75,18 +75,30 @@ export default {
         this.getWidthAfterRezise();
       },
       deep: true,
-      immediate: true,
-    }},
+      immediate: true
+    }
+  },
   methods: {
-    onDragEnd(){
-        this.op.plannedStartTime = parseInt((this.x / this.scaleCoef) + this.startTimestamp)
-        this.duration = parseInt(this.op.duration*this.scaleCoef)
+    onDragEnd() {
+      this.op.plannedStartTime = parseInt(
+        this.x / this.scaleCoef + this.startTimestamp
+      );
+      this.duration = parseInt(this.op.duration * this.scaleCoef);
+
+      this.$emit("onModifyOperationEvent", {
+        id: this.operation.id,
+        stationId: this.stationId,
+        startTime: this.getStartTimeFromPosition,
+        endTime: this.getEndTimeFromPosition,
+        duration: this.getDuration
+      });
     },
-    getPos(){
-      this.x = (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef
+    getPos() {
+      this.x =
+        (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef;
     },
-    getWidthAfterRezise(){
-      this.w = this.op.duration*this.scaleCoef
+    getWidthAfterRezise() {
+      this.w = this.op.duration * this.scaleCoef;
     },
     getTime(actualTime) {
       const time = new Date(actualTime);
@@ -99,30 +111,35 @@ export default {
         ":" +
         time.getMinutes()
       );
-    },onDeactive(){
-     this.$store.commit("selectOperationToMove", {id: this.operation.id, stationId: this.stationId, startTime: this.getStartTimeFromPosition, endTime:this.getEndTimeFromPosition, duration: this.getDuration});
     },
-    onDeactivate(){
-    }
+    onDeactive() {
+      this.$store.commit("selectOperationToMove", {
+        id: this.operation.id,
+        stationId: this.stationId,
+        startTime: this.getStartTimeFromPosition,
+        endTime: this.getEndTimeFromPosition,
+        duration: this.getDuration
+      });
+    },
+    onDeactivate() {}
   },
   computed: {
     getPosition() {
-      return (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef
+      return (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef;
     },
-    getStartTimeFromPosition(){
-      return parseInt((this.x / this.scaleCoef) + this.startTimestamp)
+    getStartTimeFromPosition() {
+      return parseInt(this.x / this.scaleCoef + this.startTimestamp);
     },
-    getEndTimeFromPosition(){
-      return ((this.x+this.w) / this.scaleCoef) + this.startTimestamp
+    getEndTimeFromPosition() {
+      return (this.x + this.w) / this.scaleCoef + this.startTimestamp;
     },
     getDuration() {
-      return this.w/this.scaleCoef
+      return this.w / this.scaleCoef;
     },
-    getWidth(){
-      return this.op.duration*this.scaleCoef
+    getWidth() {
+      return this.op.duration * this.scaleCoef;
     }
   }
-  
 };
 </script>
 

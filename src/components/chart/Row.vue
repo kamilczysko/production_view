@@ -9,6 +9,7 @@
         v-bind:startTimestamp="startTimestamp"
         v-bind:endTimestamp="endTimestamp"
         v-bind:scaleCoef="scaleCoef"
+        v-on:onModifyOperationEvent="onModifyOperationEvent"
       />
     </td>
   </tr>
@@ -38,11 +39,12 @@ export default {
   },
   methods: {
     onClick(event) {
-      
       event.preventDefault()
       const op = this.$store.state.selectedOperation
-      console.log("aaaaa"+ JSON.stringify(op))
       this.$emit("moveOperationEvent", {destinationId: this.label, operationToChange: op})
+    },
+    onModifyOperationEvent(event){
+      this.$emit("moveOperationEvent", {destinationId: this.label, operationToChange: event})
     }
   }
 };

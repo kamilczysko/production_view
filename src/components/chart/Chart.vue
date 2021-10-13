@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="refreshButton">
-        <button>
+        <button v-on:click="refresh">
           <img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png" />
         </button>
       </div>
@@ -175,15 +175,18 @@ export default {
     }
   },
   methods: {
+    refresh(){
+      this.$router.go(0);
+    },
     onMoveOperationEvent(event) {
       let foundOperation = this.operations.filter(
         op => op.id === event.operationToChange.id
       );
       if (foundOperation) {
+        console.log(foundOperation[0][this.getSelectedParamId] +" -- "+ event.destinationId)
         foundOperation[0][this.getSelectedParamId] = event.destinationId;
         foundOperation[0].plannedStartTime = event.operationToChange.startTime;
         foundOperation[0].duration = event.operationToChange.duration;
-        console.log(JSON.stringify(foundOperation))
       }
     },
     group(list, key) {
