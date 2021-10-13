@@ -14,6 +14,7 @@
       :disabledY="true"
       :disabledH="true"
       @drag-end="onDragEnd"
+      @resize-end="onDragEnd"
       @activated="onActive"
       @deactivated="onDeactive"
     >

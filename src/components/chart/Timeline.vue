@@ -3,7 +3,10 @@
     <td class="label"></td>
     <td>
       <div class="timeline--container">
-        <p class="cursor" v-bind:style="{'margin-left': `${timelineCursor}px`}">{{getTimeLineCursorValue(timelineCursor)}}</p>
+        <p
+          class="cursor"
+          v-bind:style="{'margin-left': `${timelineCursor}px`}"
+        >{{getTimeLineCursorValue(timelineCursor)}}</p>
         <p
           v-for="sign in getTimeSigns"
           v-bind:style="{'left': `${sign.signPosition*scaleCoef}px`}"
@@ -34,32 +37,46 @@ export default {
   },
   methods: {
     getTimeLineCursorValue(time) {
-      const d = new Date(((Math.round(time/this.scaleCoef)+this.startTimestamp)*1000));
-      return d.getUTCMonth() +
-            1 +
-            "/" +
-            d.getUTCDate() +
-            "-" +
-            d.getHours() +
-            ":" +
-            d.getMinutes();
+      const d = new Date(
+        (Math.round(time / this.scaleCoef) + this.startTimestamp) * 1000
+      );
+      return (
+        d.getUTCMonth() +
+        1 +
+        "/" +
+        d.getUTCDate() +
+        "-" +
+        d.getHours() +
+        ":" +
+        d.getMinutes()
+      );
+    },
+    getTimeSign(startTime) {
+      const time = parseInt(startTime);
+      let actualTime = new Date(time * 1000);
+      return {
+        signPosition: time - this.startTimestamp,
+        timestamp: time * 1000,
+        date:
+          actualTime.getUTCDate() +
+          " / " +
+          (actualTime.getUTCMonth() + 1) +
+          "-" +
+          actualTime.getHours() +
+          ":" +
+          actualTime.getMinutes()
+      };
     }
   },
   computed: {
     getTimeSigns() {
       let timeSings = [];
+      timeSings.push(this.getTimeSign(this.startTimestamp))
       this.operations.forEach(element => {
-        let actualTime = new Date(element.plannedStartTime * 1000);
-
-        const timeSign = {
-          signPosition: element.plannedStartTime - this.startTimestamp,
-          timestamp: element.plannedStartTime * 1000,
-          date:
-          actualTime.getUTCDate() + " / "+ (actualTime.getUTCMonth() + 1 )+ "-" + actualTime.getHours() + ":" + actualTime.getMinutes()
-        };
-        timeSings.push(timeSign);
+        timeSings.push(this.getTimeSign(element.plannedStartTime));
       });
-      const set = timeSings.reduce((acc, current) => {
+      
+      let set = timeSings.reduce((acc, current) => {
         const x = acc.find(item => {
           return Math.abs(item.timestamp - current.timestamp) <= 400 * 1000;
         });
@@ -77,9 +94,9 @@ export default {
 
 <style scoped>
 tr {
-    width: 150vw;
-    border-top: 1px solid black;
-    background-color: beige;
+  width: 150vw;
+  border-top: 1px solid black;
+  background-color: beige;
 }
 .label {
   min-width: 10vw;

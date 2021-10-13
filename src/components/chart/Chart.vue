@@ -129,8 +129,23 @@ export default {
       mainParamName: "stationName",
       mainParamId: "stationId",
       scaleCoef: 0.3,
-      timeLineCursor: 0
+      timeLineCursor: 0,
+      startTimestamp: 0,
+      endTimestamp:0
     };
+  },
+  created(){
+    this.startTimestamp = this.operations.sort((a, b) => {
+        return a.plannedStartTime - b.plannedStartTime;
+      })[0].plannedStartTime;
+
+      const list = this.operations.sort((a, b) => {
+        return (
+          a.plannedStartTime + a.duration - b.plannedStartTime + b.duration
+        );
+      });
+      const lastElement = list[list.length - 1];
+      this.endTimestamp = lastElement.plannedStartTime + lastElement.duration;
   },
   computed: {
     groupOperations() {
@@ -148,20 +163,20 @@ export default {
       
       return Object.fromEntries(stations);
     },
-    startTimestamp() {
-      return this.operations.sort((a, b) => {
-        return a.plannedStartTime - b.plannedStartTime;
-      })[0].plannedStartTime;
-    },
-    endTimestamp() {
-      const list = this.operations.sort((a, b) => {
-        return (
-          a.plannedStartTime + a.duration - b.plannedStartTime + b.duration
-        );
-      });
-      const lastElement = list[list.length - 1];
-      return lastElement.plannedStartTime + lastElement.duration;
-    },
+    // startTimestamp() {
+    //   return this.operations.sort((a, b) => {
+    //     return a.plannedStartTime - b.plannedStartTime;
+    //   })[0].plannedStartTime;
+    // },
+    // endTimestamp() {
+    //   const list = this.operations.sort((a, b) => {
+    //     return (
+    //       a.plannedStartTime + a.duration - b.plannedStartTime + b.duration
+    //     );
+    //   });
+      // const lastElement = list[list.length - 1];
+      // return lastElement.plannedStartTime + lastElement.duration;
+    // },
     getSelectedParamName() {
       this.mainParam = this.selected;
       this.mainParamName = this.selected;
@@ -183,7 +198,6 @@ export default {
         op => op.id === event.operationToChange.id
       );
       if (foundOperation) {
-        console.log(foundOperation[0][this.getSelectedParamId] +" -- "+ event.destinationId)
         foundOperation[0][this.getSelectedParamId] = event.destinationId;
         foundOperation[0].plannedStartTime = event.operationToChange.startTime;
         foundOperation[0].duration = event.operationToChange.duration;
