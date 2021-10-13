@@ -44,7 +44,6 @@ export default {
       this.$emit("modifyOperationEvent", {destinationId: this.rowId, operationToChange: selectedOperation})
     },
     onModifyOperationEvent(event){
-      console.log("event: "+JSON.stringify(event))
       this.$emit("modifyOperationEvent", {destinationId: event.rowId, operationToChange: event})
     }
   }
@@ -52,7 +51,7 @@ export default {
 </script>
 <style>
 td {
-  height: 40px;
+  height: 30px;
 }
 tr {
   border-top: 0.5px solid black;

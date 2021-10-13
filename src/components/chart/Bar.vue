@@ -3,7 +3,7 @@
     <Vue3DraggableResizable
       class="bar"
       :initW="localOperation.duration * scaleFactor"
-      :initH="20"
+      :initH="30"
       v-model:x="x"
       v-model:y="y"
       v-model:w="w"
@@ -16,6 +16,7 @@
       @drag-end="refreshBarState"
       @resize-end="refreshBarState"
       @deactivated="setSelectedBar"
+      v-bind:class="{isSelected : isSelected}"
     ></Vue3DraggableResizable>
   </div>
 </template>
@@ -51,7 +52,7 @@ export default {
   },
   watch: {
     scaleFactor: {
-      handler(newVal, oldVal) {
+      handler() {
         this.setXPos();
         this.setWidth();
       },
@@ -61,14 +62,8 @@ export default {
   },
   methods: {
     refreshBarState() {
-      console.log("asdf: "+ JSON.stringify({
-        id: this.operation.id,
-        rowId: this.operation.rowId,
-        startTimestamp: this.getStartTimestampFromPosition,
-        duration: this.getDuration
-      }))
-
-      this.localOperation.startTimestamp = this.x / this.scaleFactor + this.startTimestamp
+      this.localOperation.startTimestamp =
+        this.x / this.scaleFactor + this.startTimestamp;
       this.duration = parseInt(this.localOperation.duration * this.scaleFactor);
       this.$emit("onModifyOperationEvent", {
         id: this.localOperation.id,
@@ -78,7 +73,9 @@ export default {
       });
     },
     setXPos() {
-      this.x = (this.localOperation.startTimestamp - this.startTimestamp) * this.scaleFactor;
+      this.x =
+        (this.localOperation.startTimestamp - this.startTimestamp) *
+        this.scaleFactor;
     },
     setWidth() {
       this.w = this.localOperation.duration * this.scaleFactor;
@@ -93,12 +90,6 @@ export default {
     }
   },
   computed: {
-    getOperationId(){
-      return this.localOperation.id
-    },
-    getRowId(){
-      return this.localOperation.rowId;
-    },
     getStartTimestampFromPosition() {
       return parseInt(this.x / this.scaleFactor + this.startTimestamp);
     },
@@ -107,6 +98,10 @@ export default {
     },
     getDuration() {
       return this.w / this.scaleFactor;
+    },
+    isSelected() {
+      const storedOperation = this.$store.state.selectedOperation;
+      return storedOperation && storedOperation.id === this.localOperation.id;
     }
   }
 };
@@ -118,6 +113,10 @@ export default {
   background: red;
   border-radius: 5px;
   border: 1px solid black;
+  margin-top: 1px;
+}
+.isSelected {
+  border: 4px solid black
 }
 .operationBar {
   position: absolute;

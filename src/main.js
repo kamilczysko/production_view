@@ -5,7 +5,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Start from './views/Start.vue'
 import Element from './views/Element.vue'
-import OperationView from './views/OperationView.vue'
+import ProductionView from './views/ProductionView.vue'
+import ProductionPlanningView from './views/ProductionPlanningView.vue'
 
 require('@/assets/css/normalize.css')
 require('@/assets/css/style.css')
@@ -24,9 +25,13 @@ const routes = [
         name: "Element",
         component: Element
     }, {
-        path: '/operation-view',
-        name: "OperationView",
-        component: OperationView
+        path: '/production-view',
+        name: "ProductionView",
+        component: ProductionView
+    }, {
+        path: '/production-planning-view',
+        name: "ProductionPlanningView",
+        component: ProductionPlanningView
     }
 ]
 

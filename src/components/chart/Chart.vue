@@ -17,7 +17,7 @@
         <button><img src="https://img.icons8.com/ios-glyphs/30/000000/save--v1.png"/></button>
       </div>
     </div>
-    <div class="table-container" v-on:mousemove="onMouseMovement" ref="tableContainer">
+    <div class="tableContainer" v-on:mousemove="onMouseMovement" ref="tableContainer">
       <table>
         <thead>
           <tr class="tableHeader">
@@ -106,6 +106,9 @@ export default {
     }
   },
   methods: {
+    refresh(){
+      this.$forceUpdate()
+    },
     getOperationsByRowId(rowId){
       return this.operations.filter(a => a.rowId === rowId)
     },
@@ -165,7 +168,7 @@ button {
 th {
   text-align: center;
 }
-.table-container {
+.tableContainer {
   overflow-x: scroll;
 }
 thead,
