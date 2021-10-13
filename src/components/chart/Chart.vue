@@ -14,7 +14,7 @@
         </button>
       </div>
       <div class="saveButton">
-        <button>Save</button>
+        <button><img src="https://img.icons8.com/ios-glyphs/30/000000/save--v1.png"/></button>
       </div>
     </div>
     <div class="table-container" v-on:mousemove="onMouseMovement" ref="tableContainer">
@@ -30,21 +30,19 @@
             v-bind:endTimestamp="endTimestamp"
             v-bind:scaleFactor="scaleFactor"
             v-bind:timelineCursor="timelineCursor"
-            v-bind:tableElement="$refs.tableContainer"
-          />
+            v-bind:tableElement="$refs.tableContainer"/>
         </thead>
         <tbody>
-          <!-- <Row
-            v-for="(row, rowId) in getRows"
-            v-bind:key="rowId"
+          <Row
+            v-for="(row, index) in getRows"
+            v-bind:key="index"
             v-bind:startTimestamp="startTimestamp"
             v-bind:endTimestamp="endTimestamp"
-            v-bind:operations="groupedOperations[rowId]"
-            v-bind:rowId="rowId"
+            v-bind:operations="getOperationsByRowId(row.rowId)"
+            v-bind:rowId="row.rowId"
             v-bind:label="row.rowTitle"
             v-bind:scaleFactor="scaleFactor"
-            v-on:moveOperationEvent="onMoveOperationEvent"
-          /> -->
+            v-on:modifyOperationEvent="onModifyOperationEvent"/>
         </tbody>
       </table>
     </div>
@@ -66,7 +64,7 @@ export default {
       scaleFactor: 0.1,
       operations: [
         {
-          operationId: 1,
+          id: 1,
           startTimestamp: 1633204221,
           duration: 200,
           rowId: 1,
@@ -75,10 +73,10 @@ export default {
           ]
         },
         {
-          operationId: 2,
+          id: 2,
           startTimestamp: 1633205221,
-          duration: 200,
-          rowId: 1,
+          duration: 400,
+          rowId: 2,
           additionalInfo: []
         }
       ],
@@ -101,16 +99,16 @@ export default {
   },
   computed: {
     getRows() {
-      return this.getGrouped(this.rows, "rowId");
-    },
-    getGroupedOperationsByRowId() {
-      return this.getGrouped(this.operations, "rowId");
+      return this.rows
     },
     getTimestamps() {
       return this.operations.map(op => op.startTimestamp);
     }
   },
   methods: {
+    getOperationsByRowId(rowId){
+      return this.operations.filter(a => a.rowId === rowId)
+    },
     scaleUp() {
       this.scaleFactor += 0.05;
     },
@@ -145,6 +143,14 @@ export default {
         tab.getBoundingClientRect().x -
         Math.round((ROW_TITLE_WIDTH * window.innerWidth) / 100);
     },
+    onModifyOperationEvent(event){
+      let foundOperation = this.operations.filter(op => op.id === event.operationToChange.id);
+      if (foundOperation) {
+        foundOperation[0].rowId = event.destinationId;
+        foundOperation[0].startTimestamp = event.operationToChange.startTimestamp;
+        foundOperation[0].duration = event.operationToChange.duration;
+      }
+    }
   }
 };
 </script>

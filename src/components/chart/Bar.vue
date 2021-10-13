@@ -2,7 +2,7 @@
   <div>
     <Vue3DraggableResizable
       class="bar"
-      :initW="op.duration*scaleCoef"
+      :initW="localOperation.duration * scaleFactor"
       :initH="20"
       v-model:x="x"
       v-model:y="y"
@@ -13,20 +13,10 @@
       :resizable="true"
       :disabledY="true"
       :disabledH="true"
-      @drag-end="onDragEnd"
-      @resize-end="onDragEnd"
-      @activated="onActive"
-      @deactivated="onDeactive"
-    >
-      <div class="tooltip" v-bind:class="{invisible:mouseIsOff}">
-        <p>Operation: {{op.operationName}}</p>
-        <p>Station: {{op.stationName}}</p>
-        <p>Number of elements: {{op.numberOfElements}}</p>
-        <p>Start at: {{getTime((getStartTimeFromPosition*1000))}}</p>
-        <p>Ends at: {{getTime((getEndTimeFromPosition)*1000)}}</p>
-        <p>Duration: {{op.duration/60}} minutes</p>
-      </div>
-    </Vue3DraggableResizable>
+      @drag-end="refreshBarState"
+      @resize-end="refreshBarState"
+      @deactivated="setSelectedBar"
+    ></Vue3DraggableResizable>
   </div>
 </template>
 
@@ -38,107 +28,85 @@ export default {
   components: {
     Vue3DraggableResizable
   },
-  props: ["operation", "startTimestamp", "endTimestamp", "scaleCoef"],
+  props: ["operation", "startTimestamp", "endTimestamp", "scaleFactor"],
   data() {
     return {
       x: 0,
       y: 0,
       h: 0,
-      w: this.getWidth,
+      w: 0,
       active: false,
-      startPosX: 0,
-      mouseIsOff: true,
-      op: {
+      localOperation: {
         id: this.operation.id,
-        operationName: this.operation.operationName,
-        stationId: this.operation.stationId,
-        stationName: this.operation.stationName,
-        plannedStartTime: this.operation.plannedStartTime,
-        realStartTime: this.operation.realStartTime,
+        rowId: this.operation.rowId,
+        startTimestamp: this.operation.startTimestamp,
         duration: this.operation.duration,
-        realDuration: this.operation.realDuration,
-        prepareTime: this.operation.prepareTime,
-        endingTime: this.operation.endingTime,
-        orderNumber: this.operation.orderNumber,
-        numberOfElements: this.operation.numberOfElements,
-        dependentOn: this.operation.dependentOn
+        additionalInfo: this.operation.additionalInfo
       }
     };
   },
   mounted() {
-    this.x = this.getPosition;
-    this.w = this.getWidth;
+    this.setXPos();
+    this.setWidth();
   },
   watch: {
-    scaleCoef: {
+    scaleFactor: {
       handler(newVal, oldVal) {
-        this.getPos();
-        this.getWidthAfterRezise();
+        this.setXPos();
+        this.setWidth();
       },
       deep: true,
       immediate: true
     }
   },
   methods: {
-    onDragEnd() {
-      this.op.plannedStartTime = parseInt(
-        this.x / this.scaleCoef + this.startTimestamp
-      );
-      this.duration = parseInt(this.op.duration * this.scaleCoef);
+    refreshBarState() {
+      console.log("asdf: "+ JSON.stringify({
+        id: this.operation.id,
+        rowId: this.operation.rowId,
+        startTimestamp: this.getStartTimestampFromPosition,
+        duration: this.getDuration
+      }))
 
+      this.localOperation.startTimestamp = this.x / this.scaleFactor + this.startTimestamp
+      this.duration = parseInt(this.localOperation.duration * this.scaleFactor);
       this.$emit("onModifyOperationEvent", {
-        id: this.operation.id,
-        stationId: this.stationId,
-        startTime: this.getStartTimeFromPosition,
-        endTime: this.getEndTimeFromPosition,
+        id: this.localOperation.id,
+        rowId: this.localOperation.rowId,
+        startTimestamp: this.getStartTimestampFromPosition,
         duration: this.getDuration
       });
     },
-    getPos() {
-      this.x =
-        (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef;
+    setXPos() {
+      this.x = (this.localOperation.startTimestamp - this.startTimestamp) * this.scaleFactor;
     },
-    getWidthAfterRezise() {
-      this.w = this.op.duration * this.scaleCoef;
+    setWidth() {
+      this.w = this.localOperation.duration * this.scaleFactor;
     },
-    getTime(actualTime) {
-      const time = new Date(actualTime);
-      return (
-        time.getUTCDate() +
-        " / " +
-        (time.getUTCMonth() + 1) +
-        "-" +
-        time.getHours() +
-        ":" +
-        time.getMinutes()
-      );
-    },
-    onDeactive() {
+    setSelectedBar() {
       this.$store.commit("selectOperationToMove", {
-        id: this.operation.id,
-        stationId: this.stationId,
-        startTime: this.getStartTimeFromPosition,
-        endTime: this.getEndTimeFromPosition,
+        id: this.localOperation.id,
+        rowId: this.localOperation.rowId,
+        startTimestamp: this.getStartTimestampFromPosition,
         duration: this.getDuration
       });
-    },
-    onDeactivate() {}
+    }
   },
   computed: {
-    getPosition() {
-      return (this.op.plannedStartTime - this.startTimestamp) * this.scaleCoef;
+    getOperationId(){
+      return this.localOperation.id
     },
-    getStartTimeFromPosition() {
-      return parseInt(this.x / this.scaleCoef + this.startTimestamp);
+    getRowId(){
+      return this.localOperation.rowId;
     },
-    getEndTimeFromPosition() {
-      return (this.x + this.w) / this.scaleCoef + this.startTimestamp;
+    getStartTimestampFromPosition() {
+      return parseInt(this.x / this.scaleFactor + this.startTimestamp);
+    },
+    getEndTimestampFromPosition() {
+      return (this.x + this.w) / this.scaleFactor + this.startTimestamp;
     },
     getDuration() {
-      return this.w / this.scaleCoef;
-    },
-    getWidth() {
-      return this.op.duration * this.scaleCoef;
+      return this.w / this.scaleFactor;
     }
   }
 };
@@ -149,6 +117,7 @@ export default {
   z-index: 999;
   background: red;
   border-radius: 5px;
+  border: 1px solid black;
 }
 .operationBar {
   position: absolute;

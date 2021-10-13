@@ -1,33 +1,30 @@
 <template>
-  <tr v-on:contextmenu="onClick">
+  <tr v-on:contextmenu="onRightClick">
     <td class="label">{{barName}}</td>
     <td class="container">
       <Bar
-        v-for="operation in operations"
+        v-for="operation in getOperations"
         v-bind:key="operation.id"
         v-bind:operation="operation"
         v-bind:startTimestamp="startTimestamp"
         v-bind:endTimestamp="endTimestamp"
-        v-bind:scaleCoef="scaleCoef"
+        v-bind:scaleFactor="scaleFactor"
         v-on:onModifyOperationEvent="onModifyOperationEvent"
       />
     </td>
   </tr>
 </template>
-
 <script>
 import Bar from "./Bar.vue";
 export default {
   name: "row",
   props: [
     "operations",
-    "mainParamName",
+    "rowId",
+    "label",
+    "scaleFactor",
     "startTimestamp",
-    "mainParamId",
     "endTimestamp",
-    "scaleCoef",
-    "background",
-    "label"
   ],
   components: {
     Bar
@@ -35,16 +32,20 @@ export default {
   computed: {
     barName() {
       return this.label
+    },
+    getOperations(){
+      return this.operations.filter(a => a.rowId === this.rowId)
     }
   },
   methods: {
-    onClick(event) {
+    onRightClick(event) {
       event.preventDefault()
-      const op = this.$store.state.selectedOperation
-      this.$emit("moveOperationEvent", {destinationId: this.label, operationToChange: op})
+      const selectedOperation = this.$store.state.selectedOperation
+      this.$emit("modifyOperationEvent", {destinationId: this.rowId, operationToChange: selectedOperation})
     },
     onModifyOperationEvent(event){
-      this.$emit("moveOperationEvent", {destinationId: this.label, operationToChange: event})
+      console.log("event: "+JSON.stringify(event))
+      this.$emit("modifyOperationEvent", {destinationId: event.rowId, operationToChange: event})
     }
   }
 };
