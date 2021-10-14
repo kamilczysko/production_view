@@ -2,56 +2,59 @@
   <div>
     <div class="controlButtons">
       <div class="scaleButtons">
-        <span>scale</span>
+        <span>Scale</span>
         <div>
-          <button v-on:click="scaleUp"><img src="https://img.icons8.com/plumpy/24/000000/add.png"/></button>
-          <button v-on:click="scaleDown"><img src="https://img.icons8.com/plumpy/24/000000/minus--v2.png"/></button>
+          <button v-on:click="scaleUp">
+            <img src="https://img.icons8.com/plumpy/24/000000/add.png" />
+          </button>
+          <button v-on:click="scaleDown">
+            <img src="https://img.icons8.com/plumpy/24/000000/minus--v2.png" />
+          </button>
         </div>
       </div>
       <div class="refreshButton">
-        <button><img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png"/></button>
+        <button v-on:click="refresh">
+          <img src="https://img.icons8.com/ios-glyphs/30/000000/refresh--v2.png" />
+        </button>
       </div>
-
       <div class="addButton">
-        <button><img src="https://img.icons8.com/ios-glyphs/30/000000/add--v1.png"/></button>
+        <button>
+          <img src="https://img.icons8.com/ios-glyphs/30/000000/add--v1.png" />
+        </button>
       </div>
-
       <div class="saveButton">
-        <button><img src="https://img.icons8.com/material-outlined/24/000000/save.png"/></button>
+        <button>
+          <img src="https://img.icons8.com/material-outlined/24/000000/save.png" />
+        </button>
       </div>
     </div>
-    <div class="table-container" v-on:mousemove="mousemoveEvent" ref="container">
+    <div class="tableContainer" v-on:mousemove="onMouseMovement" ref="tableContainer">
       <table>
         <thead>
           <tr class="tableHeader">
-            <th class="selection">
-              <select name="chartSelection" id="chartSelection" v-model="selected">
-                <option value="operationName">Operation</option>
-                <option value="stationName">Station</option>
-              </select>
-            </th>
+            <th class="selection"></th>
             <th style="width:100%; text-align:center">Timeline</th>
           </tr>
-
           <Timeline
-            v-bind:operations="operations"
+            v-bind:timestamps="getTimestamps"
             v-bind:startTimestamp="startTimestamp"
             v-bind:endTimestamp="endTimestamp"
-            v-bind:scaleCoef="scaleCoef"
-            v-bind:timelineCursor="timeLineCursor"
-            v-bind:tableElement="$refs.container"
+            v-bind:scaleFactor="scaleFactor"
+            v-bind:timelineCursor="timelineCursor"
+            v-bind:tableElement="$refs.tableContainer"
           />
         </thead>
         <tbody>
           <Row
-            v-for="(operations, index) in groupOperations"
+            v-for="(row, index) in getRows"
             v-bind:key="index"
-            v-bind:background="index"
-            v-bind:operations="operations"
-            v-bind:mainParamName="getSelected"
             v-bind:startTimestamp="startTimestamp"
             v-bind:endTimestamp="endTimestamp"
-            v-bind:scaleCoef="scaleCoef"
+            v-bind:operations="getOperationsByRowId(row.rowId)"
+            v-bind:rowId="row.rowId"
+            v-bind:label="row.rowTitle"
+            v-bind:scaleFactor="scaleFactor"
+            v-on:modifyOperationEvent="onModifyOperationEvent"
           />
         </tbody>
       </table>
@@ -71,272 +74,101 @@ export default {
   },
   data: () => {
     return {
-      selected: "stationName",
+      scaleFactor: 0.1,
       operations: [
         {
           id: 1,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 100,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 134,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 100,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 156,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204222,
-          realStartTime: null,
-          duration: 25,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 55,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633204351,
-          realStartTime: null,
-          duration: 50,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 9,
-          operationName: "test1",
-          stationId: 12,
-          stationName: "frezarka",
-          plannedStartTime: 1633205221,
-          realStartTime: null,
-          duration: 650,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
+          startTimestamp: 1633204221,
+          duration: 200,
+          rowId: 1,
+          additionalInfo: [
+            { name: "Operation name", value: "Koszenie trawnika" }
+          ]
         },
         {
           id: 2,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633201221,
-          realStartTime: null,
-          duration: 155,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [1]
-        },
-        {
-          id: 3442,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633201621,
-          realStartTime: null,
-          duration: 150,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [1]
-        },
-        {
-          id: 3,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 45,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: [2]
-        },
-        {
-          id: 5,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 66,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "kosiarka",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "pralka",
-          plannedStartTime: 1633204721,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "dupsko",
-          plannedStartTime: 1633204221,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "sracz",
-          plannedStartTime: 1633204721,
-          realStartTime: null,
-          duration: 345,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
-        },
-        {
-          id: 6,
-          operationName: "test2",
-          stationId: 12,
-          stationName: "pralka",
-          plannedStartTime: 1633205721,
-          realStartTime: null,
-          duration: 150,
-          realDuration: null,
-          prepareTime: 344,
-          endingTime: 2345,
-          orderNumber: 1234,
-          numberOfElements: 23,
-          dependentOn: []
+          startTimestamp: 1633205221,
+          duration: 400,
+          rowId: 2,
+          additionalInfo: []
         }
       ],
-      mainParam: "stationName",
-      mainParamName: "stationName",
-      scaleCoef: 0.3,
-      timeLineCursor: 0
+      rows: [
+        { rowId: 1, rowTitle: "kosiarka" },
+        { rowId: 2, rowTitle: "kibel" },
+        { rowId: 3, rowTitle: "pralka" },
+        { rowId: 4, rowTitle: "młotek" }
+      ],
+      startTimestamp: 0,
+      endTimestamp: 0,
+      groupedOperations: [],
+      timelineCursor: 0
     };
   },
+  created() {
+    this.startTimestamp = this.getStartTimestamp(this.operations);
+    this.endTimestamp = this.getEndTimestamp(this.operations);
+    this.groupedOperations = this.getGroupedOperationsByRowId;
+  },
   computed: {
-    groupOperations() {
-      return this.group(this.operations, this.mainParam);
+    getRows() {
+      return this.rows;
     },
-    startTimestamp() {
-      return this.operations.sort((a, b) => {
-        return a.plannedStartTime - b.plannedStartTime;
-      })[0].plannedStartTime;
-    },
-    endTimestamp() {
-      const list = this.operations.sort((a, b) => {
-        return (
-          a.plannedStartTime + a.duration - b.plannedStartTime + b.duration
-        );
-      });
-      const lastElement = list[list.length - 1];
-      return lastElement.plannedStartTime + lastElement.duration;
-    },
-    getSelected() {
-      this.mainParam = this.selected;
-      this.mainParamName = this.selected;
-      return this.selected;
+    getTimestamps() {
+      return this.operations.map(op => op.startTimestamp);
     }
   },
   methods: {
-    group(list, key) {
+    refresh() {
+      this.$forceUpdate();
+    },
+    getOperationsByRowId(rowId) {
+      return this.operations.filter(a => a.rowId === rowId);
+    },
+    scaleUp() {
+      this.scaleFactor += 0.05;
+    },
+    scaleDown() {
+      this.scaleFactor += 0.05;
+    },
+    getStartTimestamp(operations) {
+      return operations.sort((a, b) => {
+        return a.startTimestamp - b.startTimestamp;
+      })[0].startTimestamp;
+    },
+    getEndTimestamp(operations) {
+      const result = operations.sort((a, b) => {
+        return (
+          b.plannedStartTime + b.duration - (a.plannedStartTime + a.duration)
+        );
+      })[0];
+      return result.startTimestamp + result.duration;
+    },
+    getGrouped(list, key) {
       return list.reduce((rv, x) => {
         (rv[x[key]] = rv[x[key]] || []).push(x);
         return rv;
       }, {});
     },
-    getDateTime(timestamp) {
-      return new Date(timestamp);
-    },
-    scaleUp() {
-      this.scaleCoef += 0.01;
-    },
-    scaleDown() {
-      this.scaleCoef -= 0.01;
-    },
-    mousemoveEvent(event) {
-      const tab = this.$refs.container;
-      this.timeLineCursor =
+    onMouseMovement(event) {
+      const ROW_TITLE_WIDTH = 10;
+      const tab = this.$refs.tableContainer;
+      this.timelineCursor =
         event.pageX +
         tab.scrollLeft -
         tab.getBoundingClientRect().x -
-        Math.round((10 * window.innerWidth) / 100);
+        Math.round((ROW_TITLE_WIDTH * window.innerWidth) / 100);
+    },
+    onModifyOperationEvent(event) {
+      let foundOperation = this.operations.filter(
+        op => op.id === event.operationToChange.id
+      );
+      if (foundOperation) {
+        foundOperation[0].rowId = event.destinationId;
+        foundOperation[0].startTimestamp =
+          event.operationToChange.startTimestamp;
+        foundOperation[0].duration = event.operationToChange.duration;
+      }
     }
   }
 };
@@ -352,7 +184,7 @@ button {
 th {
   text-align: center;
 }
-.table-container {
+.tableContainer {
   overflow-x: scroll;
 }
 thead,
@@ -418,7 +250,7 @@ button:active {
 }
 
 .selection {
-    position: sticky;
-    left: 0px;
+  position: sticky;
+  left: 0px;
 }
 </style>

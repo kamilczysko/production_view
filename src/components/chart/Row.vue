@@ -1,48 +1,57 @@
 <template>
-  <tr v-bind:class="{background : isOddKey}">
+  <tr v-on:contextmenu="onRightClick">
     <td class="label">{{barName}}</td>
     <td class="container">
       <Bar
-        v-for="operation in operations"
+        v-for="operation in getOperations"
         v-bind:key="operation.id"
         v-bind:operation="operation"
         v-bind:startTimestamp="startTimestamp"
         v-bind:endTimestamp="endTimestamp"
-        v-bind:scaleCoef="scaleCoef"
+        v-bind:scaleFactor="scaleFactor"
+        v-on:onModifyOperationEvent="onModifyOperationEvent"
       />
     </td>
   </tr>
 </template>
-
 <script>
 import Bar from "./Bar.vue";
 export default {
   name: "row",
   props: [
     "operations",
-    "mainParamName",
+    "rowId",
+    "label",
+    "scaleFactor",
     "startTimestamp",
     "endTimestamp",
-    "scaleCoef",
-    "background"
   ],
   components: {
     Bar
   },
   computed: {
     barName() {
-      return this.operations[0][this.mainParamName];
+      return this.label
     },
-    isOddKey() {
-      console.log(this.background);
-      return this.background % 2 == 1;
+    getOperations(){
+      return this.operations.filter(a => a.rowId === this.rowId)
+    }
+  },
+  methods: {
+    onRightClick(event) {
+      event.preventDefault()
+      const selectedOperation = this.$store.state.selectedOperation
+      this.$emit("modifyOperationEvent", {destinationId: this.rowId, operationToChange: selectedOperation})
+    },
+    onModifyOperationEvent(event){
+      this.$emit("modifyOperationEvent", {destinationId: event.rowId, operationToChange: event})
     }
   }
 };
 </script>
 <style>
 td {
-  height: 40px;
+  height: 30px;
 }
 tr {
   border-top: 0.5px solid black;

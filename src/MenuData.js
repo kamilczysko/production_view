@@ -16,14 +16,14 @@ const menuData =  [
           name: "Production view",
           id: 11,
           icon: "conveyor-belt.svg",
-          ref: "/operation-view",
+          ref: "/production-view",
           subitems: []
         },
         {
           name: "Production planning",
           id: 12,
           icon: "machine.svg",
-          ref: "/element/22",
+          ref: "/production-planning-view",
           subitems: []
         }
       ]

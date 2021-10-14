@@ -2,15 +2,18 @@
   <tr>
     <td class="label"></td>
     <td>
-      <div class="timeline--container">
-        <p class="cursor" v-bind:style="{'margin-left': `${timelineCursor}px`}">{{getTimeLineCursorValue(timelineCursor)}}</p>
+      <div class="timelineContainer">
+        <p class="cursor" v-bind:style="{'margin-left': `${timelineCursor}px`}">
+          {{getTimelineCursorValue(timelineCursor)}}
+        </p>
         <p
           v-for="sign in getTimeSigns"
-          v-bind:style="{'left': `${sign.signPosition*scaleCoef}px`}"
+          v-bind:style="{'left': `${sign.position}px`}"
           v-bind:key="sign.timestamp"
           class="dateSign"
-          ref="timelineContainer"
-        >{{sign.date}}</p>
+          ref="timelineContainer">
+            {{sign.date}}
+        </p>
       </div>
     </td>
   </tr>
@@ -20,56 +23,49 @@
 export default {
   name: "timeline",
   props: [
+    "timestamps",
     "startTimestamp",
-    "endTimestamp",
-    "operations",
-    "scaleCoef",
+    "endTimestmap",
+    "scaleFactor",
     "timelineCursor",
     "tableElement"
   ],
   data() {
-    return {
-      timelinecursorValue: 0
-    };
+    return {};
   },
   methods: {
-    getTimeLineCursorValue(time) {
-      const d = new Date(((Math.round(time/this.scaleCoef)+this.startTimestamp)*1000));
-      return d.getUTCMonth() +
-            1 +
-            "/" +
-            d.getUTCDate() +
-            "-" +
-            d.getHours() +
-            ":" +
-            d.getMinutes();
+    getTimelineCursorValue(time) {
+      const date = new Date((Math.round(time / this.scaleFactor) + this.startTimestamp) * 1000);
+      return (this.getDateInfo(date));
+    },
+    getTimeSign(startTime) {
+      const time = parseInt(startTime);
+      let actualTime = new Date(time * 1000);
+      return {
+        position: (time - this.startTimestamp) * this.scaleFactor,
+        timestamp: time * 1000,
+        date: this.getDateInfo(actualTime)
+      };
+    },
+    getDateInfo(time) {
+      return (time.getUTCMonth() +1 +"/" +time.getUTCDate() +"-" +time.getHours() +":" +time.getMinutes());
     }
   },
   computed: {
     getTimeSigns() {
-      let timeSings = [];
-      this.operations.forEach(element => {
-        let actualTime = new Date(element.plannedStartTime * 1000);
-
-        const timeSign = {
-          signPosition: element.plannedStartTime - this.startTimestamp,
-          timestamp: element.plannedStartTime * 1000,
-          date:
-          actualTime.getUTCDate() + " / "+ (actualTime.getUTCMonth() + 1 )+ "-" + actualTime.getHours() + ":" + actualTime.getMinutes()
-        };
-        timeSings.push(timeSign);
+      let timeSigns = [];
+      timeSigns.push(this.getTimeSign(this.startTimestamp));
+      this.timestamps.forEach(timestamp => {
+        timeSigns.push(this.getTimeSign(timestamp));
       });
-      const set = timeSings.reduce((acc, current) => {
-        const x = acc.find(item => {
-          return Math.abs(item.timestamp - current.timestamp) <= 400 * 1000;
-        });
+      return timeSigns.reduce((acc, current) => {
+        const x = acc.find(item => {return Math.abs(item.timestamp - current.timestamp) <= 350 * 1000;});
         if (!x) {
           return acc.concat([current]);
         } else {
           return acc;
         }
       }, []);
-      return set;
     }
   }
 };
@@ -77,9 +73,9 @@ export default {
 
 <style scoped>
 tr {
-    width: 150vw;
-    border-top: 1px solid black;
-    background-color: beige;
+  width: 150vw;
+  border-top: 1px solid black;
+  background-color: beige;
 }
 .label {
   min-width: 10vw;
@@ -97,12 +93,12 @@ tr {
   margin-top: 0px;
 }
 
-.timeline--container {
+.timelineContainer {
   position: relative;
   height: 40px;
 }
 
-.timeline--container p {
+.timelineContainer p {
   position: absolute;
 }
 
