@@ -1,22 +1,36 @@
 <template>
   <div>
     <h2>Workstations</h2>
-    <Table v-bind:tableHeaders="tableHeaders" v-bind:data="workstations"></Table>
+    <Table v-bind:tableHeaders="tableHeaders" v-bind:data="workstations" v-bind:wizardConfig="wizardConfig" v-on:addElement="addStation"></Table>
   </div>
 </template>
 
 <script>
 import Table from "../components/table/Table.vue";
+import WorkstationWizardConfig from "./WorkstationWizardConfig.json"
 
 export default {
   
   name: "workstations-view",
-  components: { Table },
+  components: { Table },  
+  methods:{
+    addStation(station){
+      console.log(station)
+      let newWorkstation = {
+        name:station.get("name"),
+        description:station.get("description")
+      }
+      
+      this.workstations.push(newWorkstation)
+    }
+  },
   data() {
     return {
+      wizardConfig: WorkstationWizardConfig,
       workstations: [
         {id: 1, name: "sraczyk", description: "klasyczny sracz", nextUseTimestamp: null},
-        {id: 2, name: "frezarka do paznokci", description: "frezarka dla kobiet", nextUseTimestamp: 1633206221}
+        {id: 2, name: "frezarka do paznokci", description: "frezarka dla kobiet", nextUseTimestamp: 1633206221},
+        {id: 3, name: "pralka", description: "", nextUseTimestamp: (Date.now()+500)/1000}
       ],
       tableHeaders: [
         {param: "id", name: "Id", editable: false, isTimestamp: false},

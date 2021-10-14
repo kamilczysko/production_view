@@ -1,0 +1,13 @@
+[
+  {
+    "param": "name",
+    "name": "Station Name",
+    "type": "string",
+    "mandatory": true
+  },{
+    "param": "description",
+    "name": "Description",
+    "type": "string",
+    "mandatory": false
+  }
+]
