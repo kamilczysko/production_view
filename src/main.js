@@ -7,6 +7,7 @@ import Start from './views/Start.vue'
 import Element from './views/Element.vue'
 import ProductionView from './views/ProductionView.vue'
 import ProductionPlanningView from './views/ProductionPlanningView.vue'
+import WorkstationsView from './views/WorkstationsView.vue'
 
 require('@/assets/css/normalize.css')
 require('@/assets/css/style.css')
@@ -32,6 +33,10 @@ const routes = [
         path: '/production-planning-view',
         name: "ProductionPlanningView",
         component: ProductionPlanningView
+    },{
+        path: '/workstations',
+        name: 'WorkstationsView',
+        component: WorkstationsView
     }
 ]
 

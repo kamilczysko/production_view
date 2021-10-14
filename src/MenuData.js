@@ -39,7 +39,7 @@ const menuData =  [
       name: "Workstations",
       id: 3,
       icon: "machine.svg",
-      ref: "/element/4",
+      ref: "/workstations",
       subitems: []
     },
     {
