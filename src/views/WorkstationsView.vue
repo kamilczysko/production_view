@@ -5,7 +5,7 @@
       v-bind:tableHeaders="tableHeaders"
       v-bind:data="workstations"
       v-bind:wizardConfig="wizardConfig"
-      v-on:addElement="addStation"
+      v-on:saveOfUpdateElement="saveOrEditStation"
       v-on:removeElement="removeStation"
     ></Table>
   </div>
@@ -19,7 +19,7 @@ export default {
   name: "workstations-view",
   components: { Table },
   methods: {
-    addStation(station) {
+    saveOrEditStation(station) {
       if(station.get("id")){
         console.log("update...")
         let foundStation = this.workstations.filter(s => s.id === station.get("id"))[0]
@@ -36,7 +36,7 @@ export default {
       this.workstations.push(newWorkstation);
     },
     removeStation(row){
-      this.workstations.pop(row)
+      this.workstations = this.workstations.filter(s => s.id !== row.id)
     }
   },
   data() {

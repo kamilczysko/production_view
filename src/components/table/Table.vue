@@ -13,7 +13,7 @@
           <td v-for="(d, indx) in dataRow" v-bind:key="indx">{{d}}</td>
           <td>
             <div>
-              <button v-on:click="remove(dataRow)">
+              <button v-on:click="remove(data[index])">
                 <img src="https://img.icons8.com/material-sharp/24/000000/minus-sign.png" widh="18" height="18"/>
               </button>
               <button v-on:click="edit(data[index])">
@@ -25,10 +25,10 @@
       </table>
     </div>
     <Wizard
-      v-on:addElement="addElement"
+      v-on:saveOfUpdateElement="saveOfUpdateElement"
       v-on:closeWizard="closeWizard"
       v-if="showWizard"
-      v-bind:dataToEdit="dataToEdit"
+      v-bind:dataToEdit="getDataToEdit"
       v-bind:config="config"
     />
   </div>
@@ -50,6 +50,9 @@ export default {
     };
   },
   computed: {
+    getDataToEdit(){
+      return this.dataToEdit
+    },
     getHeaders() {
       return this.tableHeaders;
     },
@@ -90,15 +93,14 @@ export default {
       return (date.getUTCMonth() +1 +"/" +date.getUTCDate() +"-" +date.getHours() +":" +date.getMinutes());
     },
     openWizard() {
+      this.dataToEdit = null;
       this.showWizard = true;
     },
     closeWizard() {
       this.showWizard = false;
-      this.editData = null;
     },
-    addElement(station) {
-      this.$emit("addElement", station);
-      this.editData = null;
+    saveOfUpdateElement(station) {
+      this.$emit("saveOfUpdateElement", station);
     }
   }
 };
