@@ -20,7 +20,14 @@ export default {
   components: { Table },
   methods: {
     addStation(station) {
-      console.log(station);
+      if(station.get("id")){
+        console.log("update...")
+        let foundStation = this.workstations.filter(s => s.id === station.get("id"))[0]
+        station.forEach((e, i) => {
+          foundStation[i] = e
+        })
+        return 
+      }
       let newWorkstation = {
         name: station.get("name"),
         description: station.get("description")
@@ -29,7 +36,6 @@ export default {
       this.workstations.push(newWorkstation);
     },
     removeStation(row){
-      console.log(row)
       this.workstations.pop(row)
     }
   },

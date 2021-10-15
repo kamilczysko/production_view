@@ -5,7 +5,7 @@
               <p>{{conf.name}} 
                   <span v-if="conf.mandatory">*</span>
               </p>
-              <input type="conf.type" v-bind:ref="conf.param"/>
+              <input type="conf.type" v-bind:ref="conf.param" v-bind:value="getValue(conf.param)"/>
           </div>
       </div>
       <button v-on:click="add">Add</button>
@@ -16,14 +16,18 @@
 <script>
 export default {
     name: "wizard",
-    props: ["config"],
+    props: ["config", "dataToEdit"],
     computed: {
         getConfig(){
-            console.log(this.config)
             return this.config
         }
     },
     methods: {
+        getValue(param){            
+            if(this.dataToEdit){
+                return this.dataToEdit[param]
+            }
+        },
         cancel() {
             this.$emit("closeWizard")
         },
@@ -41,6 +45,9 @@ export default {
                 }
                 result.set(element.param, value)
             })
+            if(this.dataToEdit.id) {
+                result.set("id", this.dataToEdit.id)
+            }
             if(confirm){
             this.$emit("addElement", result);
             this.$emit("closeWizard")}

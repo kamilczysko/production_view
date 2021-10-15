@@ -16,6 +16,9 @@
               <button v-on:click="remove(dataRow)">
                 <img src="https://img.icons8.com/material-sharp/24/000000/minus-sign.png" widh="18" height="18"/>
               </button>
+              <button v-on:click="edit(data[index])">
+                <img src="https://img.icons8.com/material-rounded/24/000000/edit--v3.png" widh="18" height="18"/>
+              </button>
             </div>
           </td>
         </tr>
@@ -25,6 +28,7 @@
       v-on:addElement="addElement"
       v-on:closeWizard="closeWizard"
       v-if="showWizard"
+      v-bind:dataToEdit="dataToEdit"
       v-bind:config="config"
     />
   </div>
@@ -41,7 +45,8 @@ export default {
   data() {
     return {
       config: this.wizardConfig,
-      showWizard: false
+      showWizard: false,
+      dataToEdit: null
     };
   },
   computed: {
@@ -70,6 +75,10 @@ export default {
     }
   },
   methods: {
+    edit(dataRow){
+      this.dataToEdit = dataRow;
+      this.showWizard = true;
+    },
     remove(dataRow){ //todo change to removing by id
       this.$emit("removeElement", dataRow)
     },
@@ -77,27 +86,19 @@ export default {
       if (Date.now() / 1000 >= time) {
         return "-";
       }
-
       const date = new Date(time * 1000);
-      return (
-        date.getUTCMonth() +
-        1 +
-        "/" +
-        date.getUTCDate() +
-        "-" +
-        date.getHours() +
-        ":" +
-        date.getMinutes()
-      );
+      return (date.getUTCMonth() +1 +"/" +date.getUTCDate() +"-" +date.getHours() +":" +date.getMinutes());
     },
     openWizard() {
       this.showWizard = true;
     },
     closeWizard() {
       this.showWizard = false;
+      this.editData = null;
     },
     addElement(station) {
       this.$emit("addElement", station);
+      this.editData = null;
     }
   }
 };
