@@ -72,33 +72,12 @@ export default {
     Timeline,
     Row
   },
+  props: ["operationsData", "rowsData"],
   data: () => {
     return {
       scaleFactor: 0.1,
-      operations: [
-        {
-          id: 1,
-          startTimestamp: 1633204221,
-          duration: 200,
-          rowId: 1,
-          additionalInfo: [
-            { name: "Operation name", value: "Koszenie trawnika" }
-          ]
-        },
-        {
-          id: 2,
-          startTimestamp: 1633205221,
-          duration: 400,
-          rowId: 2,
-          additionalInfo: []
-        }
-      ],
-      rows: [
-        { rowId: 1, rowTitle: "kosiarka" },
-        { rowId: 2, rowTitle: "kibel" },
-        { rowId: 3, rowTitle: "pralka" },
-        { rowId: 4, rowTitle: "młotek" }
-      ],
+      operations: [],
+      rows: [],
       startTimestamp: 0,
       endTimestamp: 0,
       groupedOperations: [],
@@ -106,6 +85,8 @@ export default {
     };
   },
   created() {
+    this.operations = this.operationsData;
+    this.rows = this.rowsData;
     this.startTimestamp = this.getStartTimestamp(this.operations);
     this.endTimestamp = this.getEndTimestamp(this.operations);
     this.groupedOperations = this.getGroupedOperationsByRowId;

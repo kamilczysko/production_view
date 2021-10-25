@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Production Planning View</h2>
-    <Chart/>
+    
   </div>
 </template>
 
