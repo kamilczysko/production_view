@@ -1,0 +1,29 @@
+{
+  "wizardConfig":[
+  {
+    "param": "name",
+    "name": "Station Name",
+    "type": "string",
+    "mandatory": true
+  },{
+    "param": "description",
+    "name": "Description",
+    "type": "string",
+    "mandatory": false
+  }
+],"tableConfig": [
+  { "param": "id", "name": "Id", "editable": false, "isTimestamp": false },
+  { "param": "name", "name": "Name", "editable": true, "isTimestamp": false },
+  {
+    "param": "description",
+    "name": "Description",
+    "editable": true,
+    "isTimestamp": false
+  },
+  {
+    "param": "nextUseTimestamp",
+    "name": "Will be free at",
+    "editable": false,
+    "isTimestamp": true
+  }
+]}

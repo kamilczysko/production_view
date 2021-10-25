@@ -2,7 +2,7 @@
   <div>
     <h2>Workstations</h2>
     <Table
-      v-bind:tableHeaders="tableHeaders"
+      v-bind:tableHeaders="tableConfig"
       v-bind:data="workstations"
       v-bind:wizardConfig="wizardConfig"
       v-on:saveOfUpdateElement="saveOrEditStation"
@@ -13,7 +13,7 @@
 
 <script>
 import Table from "../components/table/Table.vue";
-import WorkstationWizardConfig from "./WorkstationWizardConfig.json";
+import WorkstationViewConfig from "./WorkstationViewConfig.json";
 
 export default {
   name: "workstations-view",
@@ -41,7 +41,8 @@ export default {
   },
   data() {
     return {
-      wizardConfig: WorkstationWizardConfig,
+      wizardConfig: WorkstationViewConfig.wizardConfig,
+      tableConfig: WorkstationViewConfig.tableConfig,
       workstations: [
         {
           id: 1,
@@ -60,45 +61,6 @@ export default {
           name: "pralka",
           description: "",
           nextUseTimestamp: (Date.now() + 500) / 1000
-        }
-      ],
-      tableHeaders: [
-        { param: "id", name: "Id", editable: false, isTimestamp: false },
-        { param: "name", name: "Name", editable: true, isTimestamp: false },
-        {
-          param: "description",
-          name: "Description",
-          editable: true,
-          isTimestamp: false
-        },
-        {
-          param: "nextUseTimestamp",
-          name: "Will be free at",
-          editable: false,
-          isTimestamp: true
-        }
-      ],
-      fields: [
-        {
-          param: "name",
-          name: "Name",
-          type: "text",
-          editable: true,
-          optional: false
-        },
-        {
-          param: "desc",
-          name: "Description",
-          type: "text",
-          editable: true,
-          optional: true
-        },
-        {
-          param: "fullName",
-          name: "Full Name",
-          type: "text",
-          editable: true,
-          optional: true
         }
       ]
     };
