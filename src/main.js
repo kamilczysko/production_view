@@ -3,25 +3,17 @@ import { createStore } from 'vuex'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Element from './views/Element.vue'
 import ProductionView from './views/ProductionView.vue'
 import ProductionPlanningView from './views/ProductionPlanningView.vue'
 import WorkstationsView from './views/WorkstationsView.vue'
 import StorageView from './views/StorageView.vue'
+import OrdersView from './views/OrdersView.vue'
 
 require('@/assets/css/normalize.css')
 require('@/assets/css/style.css')
 
 const routes = [
-    {
-        path: '/element',
-        name: "Element",
-        component: Element
-    }, {
-        path: '/element/:number',
-        name: "Element",
-        component: Element
-    }, {
+     {
         path: '/production-view',
         name: "ProductionView",
         component: ProductionView
@@ -37,6 +29,10 @@ const routes = [
         path: '/storage',
         name: "StorageView",
         component: StorageView
+    }, {
+        path: '/orders',
+        name: "OrdersView",
+        component: OrdersView
     }
 ]
 
