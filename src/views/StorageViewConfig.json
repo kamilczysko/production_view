@@ -1,0 +1,57 @@
+{"wizardConfig": [
+    {
+        "param": "name",
+        "name": "Product name",
+        "type": "string",
+        "mandatory": true
+      },{
+        "param": "fullName",
+        "name": "Product full name",
+        "type": "string",
+        "mandatory": false
+      },{
+        "param": "description",
+        "name": "Description",
+        "type": "string",
+        "mandatory": false
+      },{
+        "param": "code",
+        "name": "Code",
+        "type": "string",
+        "mandatory": true
+      }
+      ,{
+        "param": "amount",
+        "name": "Amount",
+        "type": "number",
+        "mandatory": true
+      }
+  ],
+"tableConfig":[
+    { "param": "id", "name": "Id", "editable": false, "isTimestamp": false },
+    { "param": "name", "name": "Name", "editable": true, "isTimestamp": false },
+    {
+      "param": "fullName",
+      "name": "Full Name",
+      "editable": true,
+      "isTimestamp": false
+    },
+    {
+      "param": "description",
+      "name": "Description",
+      "editable": true,
+      "isTimestamp": false
+    },
+    {
+      "param": "code",
+      "name": "Code",
+      "editable": false,
+      "isTimestamp": false
+    },
+    {
+      "param": "amount",
+      "name": "Amount",
+      "editable": false,
+      "isTimestamp": false
+    }
+  ]}

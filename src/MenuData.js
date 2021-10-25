@@ -3,7 +3,7 @@ const menuData =  [
       name: "Storage",
       id: 0,
       icon: "warehouse.svg",
-      ref: "/start",
+      ref: "/storage",
       subitems: []
     },
     {
