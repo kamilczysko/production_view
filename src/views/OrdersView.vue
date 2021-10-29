@@ -13,7 +13,7 @@
 
 <script>
 import Table from "../components/table/Table.vue";
-import OrdersViewConfig from "./OrdersViewConfig.json";
+import OrdersViewConfig from "./config/OrdersViewConfig.json";
 
 export default {
   name: "orders-view",

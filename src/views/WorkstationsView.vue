@@ -13,7 +13,7 @@
 
 <script>
 import Table from "../components/table/Table.vue";
-import WorkstationViewConfig from "./WorkstationViewConfig.json";
+import WorkstationViewConfig from "./config/WorkstationViewConfig.json";
 
 export default {
   name: "workstations-view",

@@ -13,7 +13,7 @@
 
 <script>
 import Table from "../components/table/Table.vue";
-import StorageViewConfig from "./StorageViewConfig.json";
+import StorageViewConfig from "./config/StorageViewConfig.json";
 
 export default {
   name: "storage-view",

@@ -6,10 +6,8 @@
 </template>
 
 <script>
-import Chart from "../components/chart/Chart.vue";
 export default {
-  name: "production-planning-view",
-  components: { Chart }
+  name: "production-planning-view"
 };
 </script>
 
